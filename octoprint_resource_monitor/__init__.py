@@ -1,10 +1,13 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+import psutil
 import octoprint.plugin
+from octoprint.util import RepeatedTimer
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
+							octoprint.plugin.StartupPlugin,
 							octoprint.plugin.AssetPlugin,
 							octoprint.plugin.TemplatePlugin):
 
@@ -12,6 +15,18 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return dict(
 			# put your plugin's default settings here
 		)
+
+	def interval(self):
+		return 1
+
+	def check_resources(self):
+		message = dict(
+			cpu=psutil.cpu_percent(interval=1, percpu=True)
+		)
+		self._plugin_manager.send_plugin_message(self._identifier, message)
+
+	def on_after_startup(self):
+		RepeatedTimer(self.interval, self.check_resources).start()
 
 	def get_assets(self):
 		return dict(

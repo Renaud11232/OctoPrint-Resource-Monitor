@@ -7,7 +7,9 @@ plugin_author = "Renaud Gaspard"
 plugin_author_email = "gaspardrenaud@hotmail.com"
 plugin_url = "https://github.com/Renaud11232/OctoPrint-Resource-Monitor"
 plugin_license = "MIT"
-plugin_requires = []
+plugin_requires = [
+	"psutil"
+]
 plugin_additional_data = []
 plugin_additional_packages = []
 plugin_ignored_packages = []
