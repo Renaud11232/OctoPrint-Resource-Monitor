@@ -1,29 +1,33 @@
-/*
- * View model for OctoPrint-Resource-Monitor
- *
- * Author: Renaud Gaspard
- * License: MIT
- */
 $(function() {
-    function Resource_monitorViewModel(parameters) {
+    function ResourceMonitorViewModel(parameters) {
         var self = this;
-
-        // assign the injected parameters, e.g.:
-        // self.loginStateViewModel = parameters[0];
-        // self.settingsViewModel = parameters[1];
-
-        // TODO: Implement your plugin's view model here.
+        self.settingsViewModel = parameters[0];
+        var plotOptions = {
+            yaxis: {
+                min: 0,
+                max: 100,
+                tickFormatter: function(value, axis) {
+                    return value + "%";
+                }
+            },
+            xaxis: {
+                show: false
+            }
+        }
+        self.onAfterTabChange = function(current, previous) {
+            if(current === "#tab_plugin_resource_monitor") {
+                $.plot($("#resource-monitor-cpu"), [ [[0, 0], [1, 1]] ], plotOptions);
+            }
+        }
     }
 
-    /* view model class, parameters for constructor, container to bind to
-     * Please see http://docs.octoprint.org/en/master/plugins/viewmodels.html#registering-custom-viewmodels for more details
-     * and a full list of the available options.
-     */
     OCTOPRINT_VIEWMODELS.push({
-        construct: Resource_monitorViewModel,
-        // ViewModels your plugin depends on, e.g. loginStateViewModel, settingsViewModel, ...
-        dependencies: [ /* "loginStateViewModel", "settingsViewModel" */ ],
-        // Elements to bind to, e.g. #settings_plugin_resource_monitor, #tab_plugin_resource_monitor, ...
-        elements: [ /* ... */ ]
+        construct: ResourceMonitorViewModel,
+        dependencies: [
+            "settingsViewModel"
+        ],
+        elements: [
+            "#tab_plugin_resource_monitor"
+        ]
     });
 });

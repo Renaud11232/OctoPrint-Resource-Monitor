@@ -15,9 +15,12 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def get_assets(self):
 		return dict(
-			js=["js/resource_monitor.js"],
-			css=["css/resource_monitor.css"],
-			less=["less/resource_monitor.less"]
+			js=[
+				"js/resource_monitor.js"
+			],
+			css=[
+				"css/resource_monitor.css"
+			]
 		)
 
 	def get_update_information(self):
