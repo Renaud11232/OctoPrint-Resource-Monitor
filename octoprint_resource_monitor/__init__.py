@@ -23,9 +23,10 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		message = dict(
 			cpu=dict(
 				cores=psutil.cpu_percent(percpu=True),
-				average=psutil.cpu_percent()
+				average=psutil.cpu_percent(),
+				frequency=psutil.cpu_freq()._asdict()
 			),
-			memory=psutil.virtual_memory()
+			memory=psutil.virtual_memory()._asdict()
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -35,6 +36,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def get_assets(self):
 		return dict(
 			js=[
+				"js/filesize.min.js",
 				"js/resource_monitor.js"
 			],
 			css=[

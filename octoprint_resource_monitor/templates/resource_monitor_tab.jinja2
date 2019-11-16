@@ -9,13 +9,27 @@
                         </div>
                         <div class="span7">
                             {{ _("Processor") }}<br/>
-                            <span data-bind="text: cpuPercent"></span>%
+                            <small>
+                                <span data-bind="text: cpuPercent"></span>% <span data-bind="text: cpuFrequency"></span> GHz
+                            </small>
                         </div>
-                    </div
+                    </div>
                 </a>
             </li>
             <li>
-                <a href="#resource_monitor_memory_tab" data-toggle="tab">{{ _("Memory") }}</a>
+                <a href="#resource_monitor_memory_tab" data-toggle="tab">
+                    <div class="row-fluid">
+                        <div class="span5">
+                            <div id="resource-monitor-mini-memory" class="resource-monitor-mini-plot"></div>
+                        </div>
+                        <div class="span7">
+                            {{ _("Memory") }}<br/>
+                            <small>
+                                <span data-bind="text: memoryUsed"></span>/<span data-bind="text: memoryTotal"></span> <span data-bind="text: memoryUnit"></span> (<span data-bind="text: memoryPercent"></span>%)
+                            </small>
+                        </div>
+                    </div>
+                </a>
             </li>
         </ul>
     </div>
@@ -25,7 +39,7 @@
             <div id="resource-monitor-cpu-average" class="resource-monitor-cpu"></div>
         </div>
         <div id="resource_monitor_memory_tab" class="tab-pane">
-            test tab
+            Memory details here
         </div>
     </div>
 </div>
