@@ -6,6 +6,8 @@ $(function() {
         self.currentIndex = 60;
         self.plotDataInitialized = false;
 
+
+
         self.cpuPlot = null;
         self.averageCpuPlot = null;
 

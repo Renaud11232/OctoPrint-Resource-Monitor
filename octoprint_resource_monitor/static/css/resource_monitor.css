@@ -2,3 +2,14 @@ div.resource-monitor-cpu {
     height: 350px;
     width: 100%;
 }
+
+#tab_plugin_resource_monitor .container-fluid {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#tab_plugin_resource_monitor .tab-content {
+    border-right: 0px;
+    border-bottom: 0px;
+    margin-left: 0px;
+}
