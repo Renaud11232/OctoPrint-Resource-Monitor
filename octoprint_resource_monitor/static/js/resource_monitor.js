@@ -6,7 +6,7 @@ $(function() {
         self.currentIndex = 60;
         self.plotDataInitialized = false;
 
-
+        self.miniCpuPlot = null;
 
         self.cpuPlot = null;
         self.averageCpuPlot = null;
@@ -24,6 +24,41 @@ $(function() {
             },
             xaxis: {
                 show: false
+            },
+            series: {
+                lines: {
+                    lineWidth: 1,
+                    fill: true
+                },
+                shadowSize: 0
+            },
+            grid: {
+                borderWidth: 1,
+                margin: 0,
+                minBorderMargin: 0
+            }
+        };
+
+        var cpuMiniOptions = {
+            yaxis: {
+                min: 0,
+                max: 100,
+                show: false
+            },
+            xaxis: {
+                show: false
+            },
+            series: {
+                lines: {
+                    lineWidth: 1,
+                    fill: true
+                },
+                shadowSize: 0
+            },
+            grid: {
+                borderWidth: 1,
+                margin: 0,
+                minBorderMargin: 0
             }
         };
 
@@ -43,6 +78,14 @@ $(function() {
                 }
         };
 
+        self.updateMiniCpuPlot = function() {
+                if(self.plotDataInitialized && self.miniCpuPlot != null) {
+                    self.miniCpuPlot.setData(self.averageCpuPlotData);
+                    self.miniCpuPlot.setupGrid();
+                    self.miniCpuPlot.draw();
+                }
+        };
+
         self.onAfterTabChange = function(current, previous) {
             if(current === "#tab_plugin_resource_monitor") {
                 if(self.cpuPlot === null) {
@@ -52,6 +95,10 @@ $(function() {
                 if(self.averageCpuPlot === null) {
                     self.averageCpuPlot = $.plot($("#resource-monitor-cpu-average"), [[]], cpuOptions);
                     self.updateAverageCpuPlot();
+                }
+                if(self.miniCpuPlot === null) {
+                    self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], cpuMiniOptions);
+                    self.updateMiniCpuPlot();
                 }
             }
         };
@@ -87,6 +134,7 @@ $(function() {
                 self.currentIndex++;
                 self.updateCpuPlot();
                 self.updateAverageCpuPlot();
+                self.updateMiniCpuPlot();
             }
         };
     }

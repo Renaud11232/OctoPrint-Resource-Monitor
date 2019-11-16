@@ -13,3 +13,10 @@ div.resource-monitor-cpu {
     border-bottom: 0px;
     margin-left: 0px;
 }
+
+div.resource-monitor-mini-plot {
+    height: 40px;
+    width: 60px;
+    background-color: #ffffff;
+    display: inline-block;
+}

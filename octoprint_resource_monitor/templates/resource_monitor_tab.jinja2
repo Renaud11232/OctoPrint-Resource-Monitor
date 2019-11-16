@@ -1,16 +1,18 @@
-<div class="container-fluid" id="resource-monitor-container">
+<div class="container-fluid">
     <div class="row-fluid">
-        <div class="span3">
+        <div class="span4">
             <ul class="nav nav-list">
                 <li class="active">
-                    <a href="#resource_monitor_cpu_tab" data-toggle="tab">{{ _("CPU") }}</a>
+                    <a href="#resource_monitor_cpu_tab" data-toggle="tab">
+                        <div id="resource-monitor-mini-cpu" class="resource-monitor-mini-plot"></div>{{ _("CPU") }}
+                    </a>
                 </li>
                 <li>
                     <a href="#resource_monitor_memory_tab" data-toggle="tab">{{ _("Memory") }}</a>
                 </li>
             </ul>
         </div>
-        <div class="tab-content span9">
+        <div class="tab-content span8">
             <div id="resource_monitor_cpu_tab" class="tab-pane active">
                 <div id="resource-monitor-cpu" class="resource-monitor-cpu"></div>
                 <div id="resource-monitor-cpu-average" class="resource-monitor-cpu"></div>
