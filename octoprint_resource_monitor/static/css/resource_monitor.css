@@ -1,3 +1,16 @@
+#tab_plugin_resource_monitor {
+    margin-left: -10px;
+    margin-right: -10px;
+    margin-top: -5px;
+    margin-bottom: -10px;
+}
+
+#tab_plugin_resource_monitor .nav-list > li > a {
+    padding-left: 8px;
+    padding-right: 5px;
+    padding-top: 5px;
+}
+
 div.resource-monitor-cpu {
     height: 350px;
     width: 100%;
