@@ -3,18 +3,20 @@ $(function() {
         var self = this;
         self.settingsViewModel = parameters[0];
 
+        self.cpuPercent = ko.observable();
+
         self.currentIndex = 60;
         self.plotDataInitialized = false;
 
         self.miniCpuPlot = null;
 
-        self.cpuPlot = null;
-        self.averageCpuPlot = null;
+        //self.cpuPlot = null;
+        //self.averageCpuPlot = null;
 
         self.cpuPlotData = null;
         self.averageCpuPlotData = null;
 
-        var cpuOptions = {
+        /*var cpuOptions = {
             yaxis: {
                 min: 0,
                 max: 100,
@@ -37,7 +39,7 @@ $(function() {
                 margin: 0,
                 minBorderMargin: 0
             }
-        };
+        };*/
 
         var cpuMiniOptions = {
             yaxis: {
@@ -62,21 +64,21 @@ $(function() {
             }
         };
 
-        self.updateCpuPlot = function() {
+        /*self.updateCpuPlot = function() {
                 if(self.plotDataInitialized && self.cpuPlot != null) {
                     self.cpuPlot.setData(self.cpuPlotData);
                     self.cpuPlot.setupGrid();
                     self.cpuPlot.draw();
                 }
-        };
+        };*/
 
-        self.updateAverageCpuPlot = function() {
+        /*self.updateAverageCpuPlot = function() {
                 if(self.plotDataInitialized && self.averageCpuPlot != null) {
                     self.averageCpuPlot.setData(self.averageCpuPlotData);
                     self.averageCpuPlot.setupGrid();
                     self.averageCpuPlot.draw();
                 }
-        };
+        };*/
 
         self.updateMiniCpuPlot = function() {
                 if(self.plotDataInitialized && self.miniCpuPlot != null) {
@@ -88,14 +90,14 @@ $(function() {
 
         self.onAfterTabChange = function(current, previous) {
             if(current === "#tab_plugin_resource_monitor") {
-                if(self.cpuPlot === null) {
+                /*if(self.cpuPlot === null) {
                     self.cpuPlot = $.plot($("#resource-monitor-cpu"), [[]], cpuOptions);
                     self.updateCpuPlot();
-                }
-                if(self.averageCpuPlot === null) {
+                }*/
+                /*if(self.averageCpuPlot === null) {
                     self.averageCpuPlot = $.plot($("#resource-monitor-cpu-average"), [[]], cpuOptions);
                     self.updateAverageCpuPlot();
-                }
+                }*/
                 if(self.miniCpuPlot === null) {
                     self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], cpuMiniOptions);
                     self.updateMiniCpuPlot();
@@ -129,11 +131,12 @@ $(function() {
                     self.cpuPlotData[i].push([self.currentIndex, message.cpu.cores[i]]);
                     self.cpuPlotData[i].shift();
                 }
+                self.cpuPercent(Math.round(message.cpu.average));
                 self.averageCpuPlotData[0].push([self.currentIndex, message.cpu.average]);
                 self.averageCpuPlotData[0].shift();
                 self.currentIndex++;
-                self.updateCpuPlot();
-                self.updateAverageCpuPlot();
+                //self.updateCpuPlot();
+                //self.updateAverageCpuPlot();
                 self.updateMiniCpuPlot();
             }
         };
