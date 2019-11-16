@@ -7,6 +7,7 @@ $(function() {
         self.plotDataInitialized = false;
 
         self.cpuPlot = null;
+        self.averageCpuPlot = null;
 
         self.cpuPlotData = null;
         self.averageCpuPlotData = null;
@@ -26,16 +27,30 @@ $(function() {
 
         self.updateCpuPlot = function() {
                 if(self.plotDataInitialized && self.cpuPlot != null) {
-                    self.cpuPlot.setData(self.averageCpuPlotData);
+                    self.cpuPlot.setData(self.cpuPlotData);
                     self.cpuPlot.setupGrid();
                     self.cpuPlot.draw();
                 }
         };
 
+        self.updateAverageCpuPlot = function() {
+                if(self.plotDataInitialized && self.averageCpuPlot != null) {
+                    self.averageCpuPlot.setData(self.averageCpuPlotData);
+                    self.averageCpuPlot.setupGrid();
+                    self.averageCpuPlot.draw();
+                }
+        };
+
         self.onAfterTabChange = function(current, previous) {
-            if(current === "#tab_plugin_resource_monitor" && self.cpuPlot === null) {
-                self.cpuPlot = $.plot($("#resource-monitor-cpu"), [[]], cpuOptions);
-                self.updateCpuPlot();
+            if(current === "#tab_plugin_resource_monitor") {
+                if(self.cpuPlot === null) {
+                    self.cpuPlot = $.plot($("#resource-monitor-cpu"), [[]], cpuOptions);
+                    self.updateCpuPlot();
+                }
+                if(self.averageCpuPlot === null) {
+                    self.averageCpuPlot = $.plot($("#resource-monitor-cpu-average"), [[]], cpuOptions);
+                    self.updateAverageCpuPlot();
+                }
             }
         };
 
@@ -69,6 +84,7 @@ $(function() {
                 self.averageCpuPlotData[0].shift();
                 self.currentIndex++;
                 self.updateCpuPlot();
+                self.updateAverageCpuPlot();
             }
         };
     }
