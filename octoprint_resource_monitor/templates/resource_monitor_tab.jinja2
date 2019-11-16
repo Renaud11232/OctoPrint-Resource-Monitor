@@ -1,25 +1,30 @@
-<div class="container-fluid">
-    <div class="row-fluid">
-        <div class="span4">
-            <ul class="nav nav-list">
-                <li class="active">
-                    <a href="#resource_monitor_cpu_tab" data-toggle="tab">
-                        <div id="resource-monitor-mini-cpu" class="resource-monitor-mini-plot"></div>{{ _("CPU") }}
-                    </a>
-                </li>
-                <li>
-                    <a href="#resource_monitor_memory_tab" data-toggle="tab">{{ _("Memory") }}</a>
-                </li>
-            </ul>
+<div class="row-fluid">
+    <div class="span4">
+        <ul class="nav nav-list">
+            <li class="active">
+                <a href="#resource_monitor_cpu_tab" data-toggle="tab">
+                    <div class="row-fluid">
+                        <div class="span5">
+                            <div id="resource-monitor-mini-cpu" class="resource-monitor-mini-plot"></div>
+                        </div>
+                        <div class="span7">
+                            {{ _("Processor") }}
+                        </div>
+                    </div
+                </a>
+            </li>
+            <li>
+                <a href="#resource_monitor_memory_tab" data-toggle="tab">{{ _("Memory") }}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content span8">
+        <div id="resource_monitor_cpu_tab" class="tab-pane active">
+            <div id="resource-monitor-cpu" class="resource-monitor-cpu"></div>
+            <div id="resource-monitor-cpu-average" class="resource-monitor-cpu"></div>
         </div>
-        <div class="tab-content span8">
-            <div id="resource_monitor_cpu_tab" class="tab-pane active">
-                <div id="resource-monitor-cpu" class="resource-monitor-cpu"></div>
-                <div id="resource-monitor-cpu-average" class="resource-monitor-cpu"></div>
-            </div>
-            <div id="resource_monitor_memory_tab" class="tab-pane">
-                test tab
-            </div>
+        <div id="resource_monitor_memory_tab" class="tab-pane">
+            test tab
         </div>
     </div>
 </div>
