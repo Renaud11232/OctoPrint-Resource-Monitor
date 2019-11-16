@@ -21,7 +21,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def check_resources(self):
 		message = dict(
-			cpu=psutil.cpu_percent(interval=1, percpu=True)
+			cpu=psutil.cpu_percent(percpu=True)
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
