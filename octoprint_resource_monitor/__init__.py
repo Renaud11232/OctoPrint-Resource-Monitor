@@ -20,9 +20,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return 1
 
 	def check_resources(self):
-		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype]
-		for partition in partitions:
-			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
+
 		message = dict(
 			cpu=dict(
 				cores=psutil.cpu_percent(percpu=True),
@@ -30,7 +28,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				frequency=psutil.cpu_freq()._asdict()
 			),
 			memory=psutil.virtual_memory()._asdict(),
-			partitions=partitions
+			partitions=self.get_partitions()
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -47,6 +45,17 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				"css/resource_monitor.css"
 			]
 		)
+
+	def get_template_vars(self):
+		return dict(
+			partitions=self.get_partitions()
+		)
+
+	def get_partitions(self):
+		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype]
+		for partition in partitions:
+			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
+		return partitions
 
 	def get_update_information(self):
 		return dict(

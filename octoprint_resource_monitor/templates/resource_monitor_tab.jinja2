@@ -31,32 +31,38 @@
                     </div>
                 </a>
             </li>
-            <!-- ko foreach: { data: partitions, afterRender: onDiskMiniRender } -->
+            {% for partition in plugin_resource_monitor_partitions %}
                 <li>
-                    <a data-toggle="tab" data-bind="attr: {href: '#resource_monitor_disk_' + $index() + '_tab'}">
+                    <a data-toggle="tab" href="#resource_monitor_disk_{{ loop.index - 1 }}_tab">
                         <div class="row-fluid">
                             <div class="span5">
                                 <div class="resource-monitor-mini-plot"></div>
                             </div>
                             <div class="span7">
-                                {{ _("Disk") }} (<span data-bind="text: $data.mountpoint"></span>)<br/>
-                                <small>
-                                    Placeholder
-                                </small>
+                                {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition["mountpoint"] }})<br/>
+                                <!-- ko with: partitions()[{{ loop.index - 1 }}] -->
+                                    <small>
+                                        <span data-bind="text: Math.round((used/total)*100)"></span>%
+                                    </small>
+                                <!-- /ko -->
                             </div>
                         </div>
                     </a>
                 </li>
-            <!-- /ko -->
+            {% endfor %}
         </ul>
     </div>
     <div class="tab-content span8">
         <div id="resource_monitor_cpu_tab" class="tab-pane active">
-            <div id="resource-monitor-cpu" class="resource-monitor-cpu"></div>
-            <div id="resource-monitor-cpu-average" class="resource-monitor-cpu"></div>
+            Processor details here
         </div>
         <div id="resource_monitor_memory_tab" class="tab-pane">
             Memory details here
         </div>
+        {% for partition in plugin_resource_monitor_partitions %}
+            <div id="resource_monitor_disk_{{ loop.index - 1 }}_tab" class="tab-pane">
+                Disk {{ loop.index - 1 }} details here
+            </div>
+        {% endfor %}
     </div>
 </div>
