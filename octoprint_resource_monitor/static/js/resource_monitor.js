@@ -7,7 +7,7 @@ $(function() {
         self.memory = ko.observable();
         self.partitions = ko.observableArray();
 
-        self.currentIndex = 60;
+        self.currentPlotIndex = 60;
 
         self.miniCpuPlot = null;
         self.miniMemoryPlot = null;
@@ -41,12 +41,12 @@ $(function() {
         self.cpu.subscribe(function(newValue) {
             if(self.averageCpuPlotData === null) {
                 var averageData = []
-                for(var i = 0; i < self.currentIndex; i++) {
+                for(var i = 0; i < self.currentPlotIndex; i++) {
                     averageData.push([i, 0]);
                 }
                 self.averageCpuPlotData = [averageData];
             }
-            self.averageCpuPlotData[0].push([self.currentIndex, newValue.average]);
+            self.averageCpuPlotData[0].push([self.currentPlotIndex, newValue.average]);
             self.averageCpuPlotData[0].shift();
             if(self.miniCpuPlot != null) {
                 self.miniCpuPlot.setData(self.averageCpuPlotData);
@@ -58,12 +58,12 @@ $(function() {
         self.memory.subscribe(function(newValue) {
             if(self.memoryPlotData === null) {
                 var memoryData = [];
-                for(var i = 0; i < self.currentIndex; i++) {
+                for(var i = 0; i < self.currentPlotIndex; i++) {
                     memoryData.push([i, 0]);
                 }
                 self.memoryPlotData = [memoryData];
             }
-            self.memoryPlotData[0].push([self.currentIndex, newValue.used]);
+            self.memoryPlotData[0].push([self.currentPlotIndex, newValue.used]);
             self.memoryPlotData[0].shift();
             if(self.miniMemoryPlot != null) {
                 self.miniMemoryPlot.getAxes().yaxis.options.max = newValue.total;
@@ -78,7 +78,7 @@ $(function() {
             self.cpuPlotData = [];
             message.cpu.cores.forEach(core => {
                 var coreData = [];
-                for(var i = 0; i < self.currentIndex; i++) {
+                for(var i = 0; i < self.currentPlotIndex; i++) {
                     coreData.push([i, 0]);
                 }
                 self.cpuPlotData.push(coreData);
@@ -107,14 +107,14 @@ $(function() {
                 }
                 //Per core usage
                 for(var i = 0; i < message.cpu.cores.length; i++) {
-                    self.cpuPlotData[i].push([self.currentIndex, message.cpu.cores[i]]);
+                    self.cpuPlotData[i].push([self.currentPlotIndex, message.cpu.cores[i]]);
                     self.cpuPlotData[i].shift();
                 }*/
                 self.cpu(message.cpu);
                 self.memory(message.memory);
                 self.partitions(message.partitions);
 
-                self.currentIndex++;
+                self.currentPlotIndex++;
             }
         };
     }
