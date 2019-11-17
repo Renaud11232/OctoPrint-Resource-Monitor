@@ -11,10 +11,11 @@ $(function() {
 
         self.miniCpuPlot = null;
         self.miniMemoryPlot = null;
+        self.miniPartitionPlots = [];
 
-        self.cpuPlotData = null;
         self.averageCpuPlotData = null;
         self.memoryPlotData = null;
+        self.partitionPlotData = [];
 
         self.baseOptions =  {
             yaxis: {
@@ -72,21 +73,31 @@ $(function() {
                 self.miniMemoryPlot.draw();
             }
         });
-/*
-        self.initializePlotData = function(message) {
-            //Per core data
-            self.cpuPlotData = [];
-            message.cpu.cores.forEach(core => {
-                var coreData = [];
-                for(var i = 0; i < self.currentPlotIndex; i++) {
-                    coreData.push([i, 0]);
-                }
-                self.cpuPlotData.push(coreData);
+
+        self.partitions.subscribe(function(newValue) {
+            if(self.partitionPlotData.length === 0) {
+                newValue.forEach(function(partition, partitionI) {
+                    var partitionData = [];
+                    for(var i = 0; i < self.currentPlotIndex; i++) {
+                        partitionData.push([i, newValue[partitionI].used]);
+                    }
+                    self.partitionPlotData.push([partitionData]);
+                });
+            }
+            self.partitionPlotData.forEach(function(partPlotData, partitionI) {
+            console.log(partPlotData[0].length);
+                partPlotData[0].push([self.currentPlotIndex, newValue[partitionI].used]);
+                partPlotData[0].shift();
             });
-            //Memory data
-            //Sets initialized flag to true
-            self.plotDataInitialized = true;
-        };*/
+            if(self.miniPartitionPlots.length != 0) {
+                self.miniPartitionPlots.forEach(function(plot, index) {
+                    plot.getAxes().yaxis.options.max = newValue[index].total;
+                    plot.setData(self.partitionPlotData[index]);
+                    plot.setupGrid();
+                    plot.draw();
+                });
+            }
+        });
 
         self.onAfterTabChange = function(current, previous) {
             if(current === "#tab_plugin_resource_monitor") {
@@ -97,19 +108,16 @@ $(function() {
                 if(self.miniMemoryPlot === null) {
                     self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
                 }
+                if(self.miniPartitionPlots.length === 0) {
+                    $("div.resource-monitor-mini-partition-plot").each(function() {
+                        self.miniPartitionPlots.push($.plot($(this), [[]], self.baseOptions));
+                    });
+                }
             }
         };
 
         self.onDataUpdaterPluginMessage = function(plugin, message) {
             if(plugin == "resource_monitor") {
-                /*if(!self.plotDataInitialized) {
-                    self.initializePlotData(message);
-                }
-                //Per core usage
-                for(var i = 0; i < message.cpu.cores.length; i++) {
-                    self.cpuPlotData[i].push([self.currentPlotIndex, message.cpu.cores[i]]);
-                    self.cpuPlotData[i].shift();
-                }*/
                 self.cpu(message.cpu);
                 self.memory(message.memory);
                 self.partitions(message.partitions);

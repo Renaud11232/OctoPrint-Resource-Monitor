@@ -45,7 +45,7 @@
                     <a data-toggle="tab" href="#resource_monitor_disk_{{ loop.index - 1 }}_tab">
                         <div class="row-fluid">
                             <div class="span5">
-                                <div class="resource-monitor-mini-plot"></div>
+                                <div class="resource-monitor-mini-plot resource-monitor-mini-partition-plot"></div>
                             </div>
                             <div class="span7">
                                 {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition["mountpoint"] }})<br/>
