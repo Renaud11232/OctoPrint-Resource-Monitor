@@ -3,9 +3,7 @@ $(function() {
         var self = this;
         self.settingsViewModel = parameters[0];
 
-        self.cpuAverage = ko.observable();
-        self.cpuCores = ko.observableArray();
-        self.cpuFrequency = ko.observable();
+        self.cpu = ko.observable();
 
         self.memory = ko.observable();
 
@@ -118,9 +116,7 @@ $(function() {
                     self.cpuPlotData[i].shift();
                 }
                 //Total cpu usage
-                self.cpuAverage(message.cpu.average);
-                self.cpuCores(message.cpu.cores);
-                self.cpuFrequency(message.cpu.frequency);
+                self.cpu(message.cpu);
                 self.averageCpuPlotData[0].push([self.currentIndex, message.cpu.average]);
                 self.averageCpuPlotData[0].shift();
                 self.updateMiniCpuPlot();

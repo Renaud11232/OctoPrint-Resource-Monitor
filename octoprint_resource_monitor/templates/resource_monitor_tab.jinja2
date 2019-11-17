@@ -10,11 +10,9 @@
                         <div class="span7">
                             {{ _("Processor") }}<br/>
                             <small>
-                                <!-- ko with: cpuAverage() -->
-                                    <span data-bind="text: Math.round($data)"></span>%
-                                <!-- /ko -->
-                                <!-- ko with: cpuFrequency() -->
-                                    <span data-bind="text: (current/1000).toFixed(2)"></span> GHz
+                                <!-- ko with: cpu() -->
+                                    <span data-bind="text: Math.round(average)"></span>%
+                                    <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> GHz
                                 <!-- /ko -->
                             </small>
                         </div>
