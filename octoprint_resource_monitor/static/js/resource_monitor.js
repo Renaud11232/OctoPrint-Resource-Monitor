@@ -85,7 +85,6 @@ $(function() {
                 });
             }
             self.partitionPlotData.forEach(function(partPlotData, partitionI) {
-            console.log(partPlotData[0].length);
                 partPlotData[0].push([self.currentPlotIndex, newValue[partitionI].used]);
                 partPlotData[0].shift();
             });
