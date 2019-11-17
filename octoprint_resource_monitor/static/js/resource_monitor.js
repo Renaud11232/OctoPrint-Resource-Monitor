@@ -88,8 +88,11 @@ $(function() {
                 }
         };*/
 
-        self.updateMiniCpuPlot = function() {
+        self.updateMiniCpuPlot = function(message) {
                 if(self.plotDataInitialized && self.miniCpuPlot != null) {
+                    if(message){
+                        self.miniMemoryPlot.getAxes().yaxis.options.max = message.memory.total;
+                    }
                     self.miniCpuPlot.setData(self.averageCpuPlotData);
                     self.miniCpuPlot.setupGrid();
                     self.miniCpuPlot.draw();
@@ -143,7 +146,6 @@ $(function() {
             }
             self.averageCpuPlotData = [averageData];
             //Memory data
-            self.miniMemoryPlot.getAxes().yaxis.options.max = message.memory.total;
             var memoryData = [];
             for(var i = 0; i < self.currentIndex; i++) {
                 memoryData.push([i, 0]);
@@ -178,7 +180,7 @@ $(function() {
                 self.memoryPercent(Math.round((message.memory.used / message.memory.total) * 100))
                 self.memoryPlotData[0].push([self.currentIndex, message.memory.used]);
                 self.memoryPlotData[0].shift();
-                self.updateMiniMemoryPlot();
+                self.updateMiniMemoryPlot(message);
 
                 self.currentIndex++;
                 //self.updateCpuPlot();
