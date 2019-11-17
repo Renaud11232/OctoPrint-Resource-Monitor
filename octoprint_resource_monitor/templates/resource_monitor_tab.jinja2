@@ -31,6 +31,23 @@
                     </div>
                 </a>
             </li>
+            <!-- ko foreach: { data: partitions } -->
+                <li>
+                    <a href="#" data-toggle="tab">
+                        <div class="row-fluid">
+                            <div class="span5">
+                                <div class="resource-monitor-mini-plot"></div>
+                            </div>
+                            <div class="span7">
+                                {{ _("Disk") }} (<span data-bind="text: $data.mountpoint"></span>)<br/>
+                                <small>
+                                    Placeholder
+                                </small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            <!-- /ko -->
         </ul>
     </div>
     <div class="tab-content span8">

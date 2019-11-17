@@ -11,6 +11,8 @@ $(function() {
         self.memoryUnit = ko.observable();
         self.memoryPercent = ko.observable();
 
+        self.partitions = ko.observableArray();
+
         self.currentIndex = 60;
         self.plotDataInitialized = false;
 
@@ -88,19 +90,19 @@ $(function() {
                 }
         };*/
 
-        self.updateMiniCpuPlot = function(message) {
+        self.updateMiniCpuPlot = function() {
                 if(self.plotDataInitialized && self.miniCpuPlot != null) {
-                    if(message){
-                        self.miniMemoryPlot.getAxes().yaxis.options.max = message.memory.total;
-                    }
                     self.miniCpuPlot.setData(self.averageCpuPlotData);
                     self.miniCpuPlot.setupGrid();
                     self.miniCpuPlot.draw();
                 }
         };
 
-        self.updateMiniMemoryPlot = function() {
+        self.updateMiniMemoryPlot = function(message) {
                 if(self.plotDataInitialized && self.miniMemoryPlot != null) {
+                    if(message){
+                        self.miniMemoryPlot.getAxes().yaxis.options.max = message.memory.total;
+                    }
                     self.miniMemoryPlot.setData(self.memoryPlotData);
                     self.miniMemoryPlot.setupGrid();
                     self.miniMemoryPlot.draw();
@@ -155,6 +157,10 @@ $(function() {
             self.plotDataInitialized = true;
         };
 
+        self.initPartitionPlots = function(elements, data) {
+
+        };
+
         self.onDataUpdaterPluginMessage = function(plugin, message) {
             if(plugin == "resource_monitor") {
                 if(!self.plotDataInitialized) {
@@ -181,6 +187,8 @@ $(function() {
                 self.memoryPlotData[0].push([self.currentIndex, message.memory.used]);
                 self.memoryPlotData[0].shift();
                 self.updateMiniMemoryPlot(message);
+                //Partitions
+                self.partitions(message.partitions);
 
                 self.currentIndex++;
                 //self.updateCpuPlot();
