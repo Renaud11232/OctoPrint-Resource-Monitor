@@ -4,19 +4,13 @@ $(function() {
         self.settingsViewModel = parameters[0];
 
         self.cpu = ko.observable();
-
         self.memory = ko.observable();
-
         self.partitions = ko.observableArray();
 
         self.currentIndex = 60;
-        self.plotDataInitialized = false;
 
         self.miniCpuPlot = null;
         self.miniMemoryPlot = null;
-
-        //self.cpuPlot = null;
-        //self.averageCpuPlot = null;
 
         self.cpuPlotData = null;
         self.averageCpuPlotData = null;
@@ -44,25 +38,41 @@ $(function() {
             }
         };
 
-        self.updateMiniCpuPlot = function() {
-                if(self.plotDataInitialized && self.miniCpuPlot != null) {
-                    self.miniCpuPlot.setData(self.averageCpuPlotData);
-                    self.miniCpuPlot.setupGrid();
-                    self.miniCpuPlot.draw();
+        self.cpu.subscribe(function(newValue) {
+            if(self.averageCpuPlotData === null) {
+                var averageData = []
+                for(var i = 0; i < self.currentIndex; i++) {
+                    averageData.push([i, 0]);
                 }
-        };
+                self.averageCpuPlotData = [averageData];
+            }
+            self.averageCpuPlotData[0].push([self.currentIndex, newValue.average]);
+            self.averageCpuPlotData[0].shift();
+            if(self.miniCpuPlot != null) {
+                self.miniCpuPlot.setData(self.averageCpuPlotData);
+                self.miniCpuPlot.setupGrid();
+                self.miniCpuPlot.draw();
+            }
+        });
 
-        self.updateMiniMemoryPlot = function(message) {
-                if(self.plotDataInitialized && self.miniMemoryPlot != null) {
-                    if(message){
-                        self.miniMemoryPlot.getAxes().yaxis.options.max = message.memory.total;
-                    }
-                    self.miniMemoryPlot.setData(self.memoryPlotData);
-                    self.miniMemoryPlot.setupGrid();
-                    self.miniMemoryPlot.draw();
+        self.memory.subscribe(function(newValue) {
+            if(self.memoryPlotData === null) {
+                var memoryData = [];
+                for(var i = 0; i < self.currentIndex; i++) {
+                    memoryData.push([i, 0]);
                 }
-        };
-
+                self.memoryPlotData = [memoryData];
+            }
+            self.memoryPlotData[0].push([self.currentIndex, newValue.used]);
+            self.memoryPlotData[0].shift();
+            if(self.miniMemoryPlot != null) {
+                self.miniMemoryPlot.getAxes().yaxis.options.max = newValue.total;
+                self.miniMemoryPlot.setData(self.memoryPlotData);
+                self.miniMemoryPlot.setupGrid();
+                self.miniMemoryPlot.draw();
+            }
+        });
+/*
         self.initializePlotData = function(message) {
             //Per core data
             self.cpuPlotData = [];
@@ -73,25 +83,10 @@ $(function() {
                 }
                 self.cpuPlotData.push(coreData);
             });
-            //Average cpu date
-            var averageData = []
-            for(var i = 0; i < self.currentIndex; i++) {
-                averageData.push([i, 0]);
-            }
-            self.averageCpuPlotData = [averageData];
             //Memory data
-            var memoryData = [];
-            for(var i = 0; i < self.currentIndex; i++) {
-                memoryData.push([i, 0]);
-            }
-            self.memoryPlotData = [memoryData];
             //Sets initialized flag to true
             self.plotDataInitialized = true;
-        };
-
-        self.onDiskMiniRender = function(elements, data) {
-            //Called for each element
-        }
+        };*/
 
         self.onAfterTabChange = function(current, previous) {
             if(current === "#tab_plugin_resource_monitor") {
@@ -107,30 +102,19 @@ $(function() {
 
         self.onDataUpdaterPluginMessage = function(plugin, message) {
             if(plugin == "resource_monitor") {
-                if(!self.plotDataInitialized) {
+                /*if(!self.plotDataInitialized) {
                     self.initializePlotData(message);
                 }
                 //Per core usage
                 for(var i = 0; i < message.cpu.cores.length; i++) {
                     self.cpuPlotData[i].push([self.currentIndex, message.cpu.cores[i]]);
                     self.cpuPlotData[i].shift();
-                }
-                //Total cpu usage
+                }*/
                 self.cpu(message.cpu);
-                self.averageCpuPlotData[0].push([self.currentIndex, message.cpu.average]);
-                self.averageCpuPlotData[0].shift();
-                self.updateMiniCpuPlot();
-                //Memory usage
                 self.memory(message.memory);
-                self.memoryPlotData[0].push([self.currentIndex, message.memory.used]);
-                self.memoryPlotData[0].shift();
-                self.updateMiniMemoryPlot(message);
-                //Partitions
                 self.partitions(message.partitions);
 
                 self.currentIndex++;
-                //self.updateCpuPlot();
-                //self.updateAverageCpuPlot();
             }
         };
     }
