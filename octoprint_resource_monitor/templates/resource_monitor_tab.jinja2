@@ -31,9 +31,9 @@
                     </div>
                 </a>
             </li>
-            <!-- ko foreach: { data: partitions } -->
+            <!-- ko foreach: { data: partitions, afterRender: onDiskMiniRender } -->
                 <li>
-                    <a href="#" data-toggle="tab">
+                    <a data-toggle="tab" data-bind="attr: {href: '#resource_monitor_disk_' + $index() + '_tab'}">
                         <div class="row-fluid">
                             <div class="span5">
                                 <div class="resource-monitor-mini-plot"></div>

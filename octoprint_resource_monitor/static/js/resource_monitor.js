@@ -24,7 +24,6 @@ $(function() {
 
         self.cpuPlotData = null;
         self.averageCpuPlotData = null;
-
         self.memoryPlotData = null;
 
         self.baseOptions =  {
@@ -49,47 +48,6 @@ $(function() {
             }
         };
 
-        /*var cpuOptions = {
-            yaxis: {
-                min: 0,
-                max: 100,
-                tickFormatter: function(value, axis) {
-                    return value + "%";
-                }
-            },
-            xaxis: {
-                show: false
-            },
-            series: {
-                lines: {
-                    lineWidth: 1,
-                    fill: true
-                },
-                shadowSize: 0
-            },
-            grid: {
-                borderWidth: 1,
-                margin: 0,
-                minBorderMargin: 0
-            }
-        };*/
-
-        /*self.updateCpuPlot = function() {
-                if(self.plotDataInitialized && self.cpuPlot != null) {
-                    self.cpuPlot.setData(self.cpuPlotData);
-                    self.cpuPlot.setupGrid();
-                    self.cpuPlot.draw();
-                }
-        };*/
-
-        /*self.updateAverageCpuPlot = function() {
-                if(self.plotDataInitialized && self.averageCpuPlot != null) {
-                    self.averageCpuPlot.setData(self.averageCpuPlotData);
-                    self.averageCpuPlot.setupGrid();
-                    self.averageCpuPlot.draw();
-                }
-        };*/
-
         self.updateMiniCpuPlot = function() {
                 if(self.plotDataInitialized && self.miniCpuPlot != null) {
                     self.miniCpuPlot.setData(self.averageCpuPlotData);
@@ -109,29 +67,7 @@ $(function() {
                 }
         };
 
-        self.onAfterTabChange = function(current, previous) {
-            if(current === "#tab_plugin_resource_monitor") {
-                /*if(self.cpuPlot === null) {
-                    self.cpuPlot = $.plot($("#resource-monitor-cpu"), [[]], cpuOptions);
-                    self.updateCpuPlot();
-                }*/
-                /*if(self.averageCpuPlot === null) {
-                    self.averageCpuPlot = $.plot($("#resource-monitor-cpu-average"), [[]], cpuOptions);
-                    self.updateAverageCpuPlot();
-                }*/
-                if(self.miniCpuPlot === null) {
-                    self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], self.baseOptions);
-                    self.miniCpuPlot.getAxes().yaxis.options.max = 100;
-                    self.updateMiniCpuPlot();
-                }
-                if(self.miniMemoryPlot === null) {
-                    self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
-                    self.updateMiniMemoryPlot();
-                }
-            }
-        };
-
-        self.initializePlots = function(message) {
+        self.initializePlotData = function(message) {
             //Per core data
             self.cpuPlotData = [];
             message.cpu.cores.forEach(core => {
@@ -157,14 +93,26 @@ $(function() {
             self.plotDataInitialized = true;
         };
 
-        self.initPartitionPlots = function(elements, data) {
+        self.onDiskMiniRender = function(elements, data) {
+            //Called for each element
+        }
 
+        self.onAfterTabChange = function(current, previous) {
+            if(current === "#tab_plugin_resource_monitor") {
+                if(self.miniCpuPlot === null) {
+                    self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], self.baseOptions);
+                    self.miniCpuPlot.getAxes().yaxis.options.max = 100;
+                }
+                if(self.miniMemoryPlot === null) {
+                    self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
+                }
+            }
         };
 
         self.onDataUpdaterPluginMessage = function(plugin, message) {
             if(plugin == "resource_monitor") {
                 if(!self.plotDataInitialized) {
-                    self.initializePlots(message);
+                    self.initializePlotData(message);
                 }
                 //Per core usage
                 for(var i = 0; i < message.cpu.cores.length; i++) {
