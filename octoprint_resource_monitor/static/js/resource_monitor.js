@@ -3,13 +3,11 @@ $(function() {
         var self = this;
         self.settingsViewModel = parameters[0];
 
-        self.cpuPercent = ko.observable();
+        self.cpuAverage = ko.observable();
+        self.cpuCores = ko.observableArray();
         self.cpuFrequency = ko.observable();
 
-        self.memoryUsed = ko.observable();
-        self.memoryTotal = ko.observable();
-        self.memoryUnit = ko.observable();
-        self.memoryPercent = ko.observable();
+        self.memory = ko.observable();
 
         self.partitions = ko.observableArray();
 
@@ -120,18 +118,14 @@ $(function() {
                     self.cpuPlotData[i].shift();
                 }
                 //Total cpu usage
-                self.cpuFrequency((message.cpu.frequency.current / 1000).toFixed(2));
-                self.cpuPercent(Math.round(message.cpu.average));
+                self.cpuAverage(message.cpu.average);
+                self.cpuCores(message.cpu.cores);
+                self.cpuFrequency(message.cpu.frequency);
                 self.averageCpuPlotData[0].push([self.currentIndex, message.cpu.average]);
                 self.averageCpuPlotData[0].shift();
                 self.updateMiniCpuPlot();
                 //Memory usage
-                var exponent = filesize(message.memory.total, {output: "exponent"});
-                var size = filesize(message.memory.total, {output: "object", exponent: exponent});
-                self.memoryUnit(size.symbol);
-                self.memoryTotal(Math.round(size.value.toFixed(1)));
-                self.memoryUsed(filesize(message.memory.used, {output: "object", exponent: exponent}).value.toFixed(1));
-                self.memoryPercent(Math.round((message.memory.used / message.memory.total) * 100))
+                self.memory(message.memory);
                 self.memoryPlotData[0].push([self.currentIndex, message.memory.used]);
                 self.memoryPlotData[0].shift();
                 self.updateMiniMemoryPlot(message);

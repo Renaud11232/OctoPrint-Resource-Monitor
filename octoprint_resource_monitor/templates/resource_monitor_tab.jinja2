@@ -10,7 +10,12 @@
                         <div class="span7">
                             {{ _("Processor") }}<br/>
                             <small>
-                                <span data-bind="text: cpuPercent"></span>% <span data-bind="text: cpuFrequency"></span> GHz
+                                <!-- ko with: cpuAverage() -->
+                                    <span data-bind="text: Math.round($data)"></span>%
+                                <!-- /ko -->
+                                <!-- ko with: cpuFrequency() -->
+                                    <span data-bind="text: (current/1000).toFixed(2)"></span> GHz
+                                <!-- /ko -->
                             </small>
                         </div>
                     </div>
@@ -25,7 +30,13 @@
                         <div class="span7">
                             {{ _("Memory") }}<br/>
                             <small>
-                                <span data-bind="text: memoryUsed"></span>/<span data-bind="text: memoryTotal"></span> <span data-bind="text: memoryUnit"></span> (<span data-bind="text: memoryPercent"></span>%)
+                                <!-- ko with: memory() -->
+                                    <!-- ko with: filesize(total, {output: "exponent"}) -->
+                                        <span data-bind="text: filesize($parent.used, {output: 'object', exponent: $data}).value.toFixed(1)"></span>/<span data-bind="text: filesize($parent.total, {output: 'object', exponent: $data}).value.toFixed(1)""></span>
+                                        <span data-bind="text: filesize($parent.total, {output: 'object', exponent: $data}).symbol"></span>
+                                        (<span data-bind="text: Math.round($parent.percent)"></span>%)
+                                    <!-- /ko -->
+                                <!-- /ko -->
                             </small>
                         </div>
                     </div>
