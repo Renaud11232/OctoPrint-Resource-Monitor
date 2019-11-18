@@ -6,16 +6,19 @@ $(function() {
         self.cpu = ko.observable();
         self.memory = ko.observable();
         self.partitions = ko.observableArray();
+        self.network = ko.observableArray();
 
         self.currentPlotIndex = 60;
 
         self.miniCpuPlot = null;
         self.miniMemoryPlot = null;
         self.miniPartitionPlots = [];
+        self.miniNetworkPlots = [];
 
         self.averageCpuPlotData = null;
         self.memoryPlotData = null;
         self.partitionPlotData = [];
+        self.networkPlotData = [];
 
         self.baseOptions =  {
             yaxis: {
@@ -98,6 +101,10 @@ $(function() {
             }
         });
 
+        self.network.subscribe(function(newValue) {
+
+        });
+
         self.onAfterTabChange = function(current, previous) {
             if(current === "#tab_plugin_resource_monitor") {
                 if(self.miniCpuPlot === null) {
@@ -112,6 +119,11 @@ $(function() {
                         self.miniPartitionPlots.push($.plot($(this), [[]], self.baseOptions));
                     });
                 }
+                if(self.miniNetworkPlots.length === 0) {
+                    $("div.resource-monitor-mini-network-plot").each(function() {
+                        self.miniNetworkPlots.push($.plot($(this), [[]], self.baseOptions));
+                    });
+                }
             }
         };
 
@@ -120,6 +132,7 @@ $(function() {
                 self.cpu(message.cpu);
                 self.memory(message.memory);
                 self.partitions(message.partitions);
+                self.network(message.network);
 
                 self.currentPlotIndex++;
             }
