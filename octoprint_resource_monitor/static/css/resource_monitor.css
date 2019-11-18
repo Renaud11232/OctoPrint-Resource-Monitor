@@ -17,6 +17,7 @@ div.resource-monitor-cpu {
 }
 
 #tab_plugin_resource_monitor .tab-content {
+    border-radius: 0px;
     border-right: 0px;
     border-bottom: 0px;
     margin-left: 0px;

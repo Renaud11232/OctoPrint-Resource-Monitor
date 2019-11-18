@@ -124,7 +124,17 @@ $(function() {
         });
 
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
-            console.log(e.target);
+            var tabId = $(e.target).attr("href");
+            // TODO initialize plots and whatnots
+            if (tabId === "#resource_monitor_memory_tab") {
+                console.log("TODO : init memory plot");
+            } else if (tabId.includes("#resource_monitor_disk_")) {
+                var index = parseInt($(e.target).attr("data-index"));
+                console.log("TODO : init disk " + index +" plot");
+            } else if (tabId.includes("#resource_monitor_network_")) {
+                var index = parseInt($(e.target).attr("data-index"));
+                console.log("TODO : init network " + index +" plot");
+            }
         });
 
         self.onAfterTabChange = function(current, previous) {
