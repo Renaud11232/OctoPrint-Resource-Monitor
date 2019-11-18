@@ -123,6 +123,17 @@ $(function() {
             }
         });
 
+        //Hacky way of supporting Themeify
+        new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if(mutation.attributeName === "class") {
+                    $("div.resource-monitor-mini-plot").css("background-color", $("body").css("background-color"));
+                }
+            });
+        }).observe($("html")[0], {
+            attributes: true
+        });
+
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
             var tabId = $(e.target).attr("href");
             // TODO initialize plots and whatnots
