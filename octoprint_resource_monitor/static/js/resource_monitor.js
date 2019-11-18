@@ -102,7 +102,29 @@ $(function() {
         });
 
         self.network.subscribe(function(newValue) {
+            if(self.networkPlotData.length === 0) {
+                newValue.forEach(function(network, networkIndex) {
+                    var downloadData = [];
+                    var uploadData = [];
+                    for(var i = 0; i < self.currentPlotIndex; i++) {
+                        downloadData.push([i, 0]);
+                        uploadData.push([i, 0]);
+                    }
+                    self.networkPlotData.push([downloadData, uploadData]);
+                });
+            }
+            // TODO update the data here
+            if(self.miniNetworkPlots.length != 0) {
+                self.miniNetworkPlots.forEach(function(plot, index) {
+                    plot.setData(self.networkPlotData[index]);
+                    plot.setupGrid();
+                    plot.draw();
+                });
+            }
+        });
 
+        $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
+            console.log(e.target);
         });
 
         self.onAfterTabChange = function(current, previous) {
