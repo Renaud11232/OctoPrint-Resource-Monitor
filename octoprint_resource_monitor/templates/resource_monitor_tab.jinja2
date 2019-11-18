@@ -59,6 +59,23 @@
                     </a>
                 </li>
             {% endfor %}
+            {% for nic in plugin_resource_monitor_network %}
+                <li>
+                    <a data-toggle="tab" href="#resource_monitor_network_{{ loop.index - 1 }}_tab">
+                        <div class="row-fluid">
+                            <div class="span5">
+                                <div class="resource-monitor-mini-plot resource-monitor-mini-network-plot"></div>
+                            </div>
+                            <div class="span7">
+                                {{ _("Network") }}<br/>
+                                    <small>
+                                        {{ nic["name"] }}
+                                    </small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
         </ul>
     </div>
     <div class="tab-content span8">
@@ -71,6 +88,11 @@
         {% for partition in plugin_resource_monitor_partitions %}
             <div id="resource_monitor_disk_{{ loop.index - 1 }}_tab" class="tab-pane">
                 Disk {{ loop.index - 1 }} details here
+            </div>
+        {% endfor %}
+        {% for nic in plugin_resource_monitor_network %}
+            <div id="resource_monitor_network_{{ loop.index - 1 }}_tab" class="tab-pane">
+                Network {{ loop.index - 1 }} details here
             </div>
         {% endfor %}
     </div>

@@ -28,3 +28,9 @@ div.resource-monitor-mini-plot {
     background-color: #ffffff;
     display: inline-block;
 }
+
+#tab_plugin_resource_monitor .nav-list li div.span7 {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

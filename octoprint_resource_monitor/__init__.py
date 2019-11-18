@@ -28,7 +28,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				frequency=psutil.cpu_freq()._asdict()
 			),
 			memory=psutil.virtual_memory()._asdict(),
-			partitions=self.get_partitions()
+			partitions=self.get_partitions(),
+			network=self.get_network()
+
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -48,7 +50,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def get_template_vars(self):
 		return dict(
-			partitions=self.get_partitions()
+			partitions=self.get_partitions(),
+			network=self.get_network()
 		)
 
 	def get_partitions(self):
@@ -56,6 +59,21 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		for partition in partitions:
 			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
 		return partitions
+
+	def get_network(self):
+		io_counters = psutil.net_io_counters(pernic=True)
+		addrs = psutil.net_if_addrs()
+		stats = psutil.net_if_stats()
+		final = []
+		for nic_name in io_counters:
+			nic = dict(
+				name=nic_name,
+				addrs=[addr._asdict() for addr in addrs[nic_name]]
+			)
+			nic.update(io_counters[nic_name]._asdict())
+			nic.update(stats[nic_name]._asdict())
+			final.append(nic)
+		return final
 
 	def get_update_information(self):
 		return dict(
