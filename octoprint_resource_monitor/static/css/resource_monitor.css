@@ -11,16 +11,10 @@
     padding-top: 5px;
 }
 
-div.resource-monitor-cpu {
-    height: 350px;
-    width: 100%;
-}
-
 #tab_plugin_resource_monitor .tab-content {
-    border-radius: 0px;
     border-right: 0px;
     border-bottom: 0px;
-    margin-left: 0px;
+    border-left: 0px;
 }
 
 div.resource-monitor-mini-plot {
@@ -37,4 +31,34 @@ div.resource-monitor-mini-plot {
 
 .tiny-text {
     font-size: smaller;
+}
+
+#tab_plugin_resource_monitor .cpu-grid {
+    width: 100;
+    display: grid;
+    grid-auto-flow: row;
+}
+
+#tab_plugin_resource_monitor .cpu-grid-1 {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+#tab_plugin_resource_monitor .cpu-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+#tab_plugin_resource_monitor .cpu-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+#tab_plugin_resource_monitor .cpu-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+#tab_plugin_resource_monitor .cpu-grid-6 {
+    grid-template-columns: repeat(6, 1fr);
+}
+
+#tab_plugin_resource_monitor .cpu-grid-8 {
+    grid-template-columns: repeat(8, 1fr);
 }

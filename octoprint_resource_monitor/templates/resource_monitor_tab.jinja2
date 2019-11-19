@@ -80,22 +80,33 @@
             {% endfor %}
         </ul>
     </div>
-    <div class="tab-content span8">
-        <div id="resource_monitor_cpu_tab" class="tab-pane active">
-            Processor details here
-        </div>
-        <div id="resource_monitor_memory_tab" class="tab-pane">
-            Memory details here
-        </div>
-        {% for partition in plugin_resource_monitor_partitions %}
-            <div id="resource_monitor_disk_{{ loop.index - 1 }}_tab" class="tab-pane">
-                Disk {{ loop.index - 1 }} details here
+    <div class="span8">
+        <div class="tab-content">
+            <div id="resource_monitor_cpu_tab" class="tab-pane active">
+                {% if True %}
+                    {% set nb_columns = 4 %}
+                {% endif %}
+                <div class="cpu-grid cpu-grid-{{ nb_columns }}">
+                    {% for core in plugin_resource_monitor_cpu.cores %}
+                        <div>
+                            Coucou {{ loop.index - 1 }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-        {% endfor %}
-        {% for nic in plugin_resource_monitor_network %}
-            <div id="resource_monitor_network_{{ loop.index - 1 }}_tab" class="tab-pane">
-                Network {{ loop.index - 1 }} details here
+            <div id="resource_monitor_memory_tab" class="tab-pane">
+                Memory details here
             </div>
-        {% endfor %}
+            {% for partition in plugin_resource_monitor_partitions %}
+                <div id="resource_monitor_disk_{{ loop.index - 1 }}_tab" class="tab-pane">
+                    Disk {{ loop.index - 1 }} details here
+                </div>
+            {% endfor %}
+            {% for nic in plugin_resource_monitor_network %}
+                <div id="resource_monitor_network_{{ loop.index - 1 }}_tab" class="tab-pane">
+                    Network {{ loop.index - 1 }} details here
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
