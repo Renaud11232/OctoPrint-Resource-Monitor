@@ -30,7 +30,7 @@
                             <span class="tiny-text">
                                 <!-- ko with: memory() -->
                                     <!-- ko with: filesize(total, {output: "exponent"}) -->
-                                        <span data-bind="text: filesize($parent.used, {output: 'object', exponent: $data}).value.toFixed(1)"></span>/<span data-bind="text: filesize($parent.total, {output: 'object', exponent: $data}).value.toFixed(1)""></span>
+                                        <span data-bind="text: filesize($parent.used, {output: 'object', exponent: $data, round: 1}).value"></span>/<span data-bind="text: filesize($parent.total, {output: 'object', exponent: $data, round: 1}).value"></span>
                                         <span data-bind="text: filesize($parent.total, {output: 'object', exponent: $data}).symbol"></span>
                                         (<span data-bind="text: Math.round($parent.percent)"></span>%)
                                     <!-- /ko -->
@@ -49,11 +49,13 @@
                             </div>
                             <div class="span7">
                                 {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition["mountpoint"] }})<br/>
-                                <!-- ko with: partitions()[{{ loop.index - 1 }}] -->
-                                    <span class="tiny-text">
-                                        <span data-bind="text: Math.round((used/total)*100)"></span>%
-                                    </span>
-                                <!-- /ko -->
+                                <span class="tiny-text">
+                                    <!-- ko with: partitions()[{{ loop.index - 1 }}] -->
+                                        <span data-bind="text: Math.round(percent)"></span>%
+                                        {{ _("of") }}
+                                        <span data-bind="text: filesize(total, {round: 1})"></span>
+                                    <!-- /ko -->
+                                </span>
                             </div>
                         </div>
                     </a>
