@@ -48,7 +48,7 @@
                                 <div class="resource-monitor-mini-plot resource-monitor-mini-partition-plot"></div>
                             </div>
                             <div class="span7">
-                                {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition["mountpoint"] }})<br/>
+                                {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition.mountpoint }})<br/>
                                 <span class="tiny-text">
                                     <!-- ko with: partitions()[{{ loop.index - 1 }}] -->
                                         <span data-bind="text: Math.round(percent)"></span>%
@@ -71,7 +71,7 @@
                             <div class="span7">
                                 {{ _("Network") }} {{ loop.index - 1 }}<br/>
                                 <span class="tiny-text">
-                                    {{ nic["name"] }}
+                                    {{ nic.name }}
                                 </span>
                             </div>
                         </div>
@@ -83,11 +83,19 @@
     <div class="span8">
         <div class="tab-content">
             <div id="resource_monitor_cpu_tab" class="tab-pane active">
-                {% if True %}
+                {% set core_count = plugin_resource_monitor_cpu.cores|length %}
+                {# set core_count = 1 #}
+                {% if core_count > 4 and core_count % 4 == 0 %}
                     {% set nb_columns = 4 %}
+                {% elif core_count % 3 == 0 %}
+                    {% set nb_columns = 3 %}
+                {% elif core_count % 2 == 0 %}
+                    {% set nb_columns = 2 %}
+                {% else %}
+                    {% set nb_columns = 1 %}
                 {% endif %}
                 <div class="cpu-grid cpu-grid-{{ nb_columns }}">
-                    {% for core in plugin_resource_monitor_cpu.cores %}
+                    {% for core in plugin_resource_monitor_cpu.cores|slice(core_count) %}
                         <div class="resource-monitor-cpu-core"></div>
                     {% endfor %}
                 </div>

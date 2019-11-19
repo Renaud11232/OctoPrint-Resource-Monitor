@@ -57,14 +57,6 @@ div.resource-monitor-mini-plot {
     grid-template-columns: repeat(4, 1fr);
 }
 
-#tab_plugin_resource_monitor .cpu-grid-6 {
-    grid-template-columns: repeat(6, 1fr);
-}
-
-#tab_plugin_resource_monitor .cpu-grid-8 {
-    grid-template-columns: repeat(8, 1fr);
-}
-
 div.resource-monitor-cpu-core {
     width: 100%;
     height: 70px;
