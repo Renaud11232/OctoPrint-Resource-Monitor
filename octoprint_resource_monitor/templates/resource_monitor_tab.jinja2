@@ -69,7 +69,7 @@
                                 <div class="resource-monitor-mini-plot resource-monitor-mini-network-plot"></div>
                             </div>
                             <div class="span7">
-                                {{ _("Network") }}<br/>
+                                {{ _("Network") }} {{ loop.index - 1 }}<br/>
                                 <span class="tiny-text">
                                     {{ nic["name"] }}
                                 </span>
