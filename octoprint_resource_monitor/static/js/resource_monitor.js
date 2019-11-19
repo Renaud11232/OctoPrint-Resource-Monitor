@@ -47,7 +47,6 @@ $(function() {
         };
 
         self.cpu.subscribe(function(newValue) {
-            //newValue.cores.splice(0, 1);
             if(self.averageCpuPlotData === null) {
                 var averageData = []
                 for(var i = 0; i < self.currentPlotIndex; i++) {
