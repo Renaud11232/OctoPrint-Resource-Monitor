@@ -93,14 +93,12 @@ $(function() {
                 partPlotData[0].push([self.currentPlotIndex, newValue[partitionI].used]);
                 partPlotData[0].shift();
             });
-            if(self.miniPartitionPlots.length != 0) {
-                self.miniPartitionPlots.forEach(function(plot, index) {
-                    plot.getAxes().yaxis.options.max = newValue[index].total;
-                    plot.setData(self.partitionPlotData[index]);
-                    plot.setupGrid();
-                    plot.draw();
-                });
-            }
+            self.miniPartitionPlots.forEach(function(plot, index) {
+                plot.getAxes().yaxis.options.max = newValue[index].total;
+                plot.setData(self.partitionPlotData[index]);
+                plot.setupGrid();
+                plot.draw();
+            });
         });
 
         self.network.subscribe(function(newValue) {
@@ -138,13 +136,11 @@ $(function() {
                 self.lastReceivedBytes[networkIndex] = newValue[networkIndex].bytes_recv;
                 self.lastSentBytes[networkIndex] = newValue[networkIndex].bytes_sent;
             });
-            if(self.miniNetworkPlots.length != 0) {
-                self.miniNetworkPlots.forEach(function(plot, index) {
-                    plot.setData(self.networkPlotData[index]);
-                    plot.setupGrid();
-                    plot.draw();
-                });
-            }
+            self.miniNetworkPlots.forEach(function(plot, index) {
+                plot.setData(self.networkPlotData[index]);
+                plot.setupGrid();
+                plot.draw();
+            });
         });
 
         //Hacky way of supporting Themeify
