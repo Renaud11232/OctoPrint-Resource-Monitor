@@ -31,7 +31,7 @@ $(function() {
             series: {
                 lines: {
                     lineWidth: 1,
-                    fill: true
+                    fill: 0.1
                 },
                 shadowSize: 0
             },
@@ -153,18 +153,28 @@ $(function() {
                 if(self.miniCpuPlot === null) {
                     self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], self.baseOptions);
                     self.miniCpuPlot.getAxes().yaxis.options.max = 100;
+                    self.miniCpuPlot.getOptions().colors = ["#117dbb"];
+                    self.miniCpuPlot.getOptions().grid.borderColor = "#117dbb";
                 }
                 if(self.miniMemoryPlot === null) {
                     self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
+                    self.miniMemoryPlot.getOptions().colors = ["#8b12ae"];
+                    self.miniMemoryPlot.getOptions().grid.borderColor = "#8b12ae";
                 }
                 if(self.miniPartitionPlots.length === 0) {
                     $("div.resource-monitor-mini-partition-plot").each(function() {
-                        self.miniPartitionPlots.push($.plot($(this), [[]], self.baseOptions));
+                        var plot = $.plot($(this), [[]], self.baseOptions);
+                        plot.getOptions().colors = ["#4da60c"];
+                        plot.getOptions().grid.borderColor = "#4da60c";
+                        self.miniPartitionPlots.push(plot);
                     });
                 }
                 if(self.miniNetworkPlots.length === 0) {
                     $("div.resource-monitor-mini-network-plot").each(function() {
-                        self.miniNetworkPlots.push($.plot($(this), [[]], self.baseOptions));
+                        var plot = $.plot($(this), [[]], self.baseOptions);
+                        plot.getOptions().colors = ["#a74f01"];
+                        plot.getOptions().grid.borderColor = "#a74f01";
+                        self.miniNetworkPlots.push(plot);
                     });
                 }
             }
