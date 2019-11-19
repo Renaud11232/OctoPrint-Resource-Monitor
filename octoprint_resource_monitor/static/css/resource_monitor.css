@@ -34,3 +34,7 @@ div.resource-monitor-mini-plot {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+
+.tiny-text {
+    font-size: smaller;
+}

@@ -9,12 +9,12 @@
                         </div>
                         <div class="span7">
                             {{ _("Processor") }}<br/>
-                            <small>
+                            <span class="tiny-text">
                                 <!-- ko with: cpu() -->
                                     <span data-bind="text: Math.round(average)"></span>%
                                     <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> GHz
                                 <!-- /ko -->
-                            </small>
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -27,7 +27,7 @@
                         </div>
                         <div class="span7">
                             {{ _("Memory") }}<br/>
-                            <small>
+                            <span class="tiny-text">
                                 <!-- ko with: memory() -->
                                     <!-- ko with: filesize(total, {output: "exponent"}) -->
                                         <span data-bind="text: filesize($parent.used, {output: 'object', exponent: $data}).value.toFixed(1)"></span>/<span data-bind="text: filesize($parent.total, {output: 'object', exponent: $data}).value.toFixed(1)""></span>
@@ -35,7 +35,7 @@
                                         (<span data-bind="text: Math.round($parent.percent)"></span>%)
                                     <!-- /ko -->
                                 <!-- /ko -->
-                            </small>
+                            </span>
                         </div>
                     </div>
                 </a>
@@ -50,9 +50,9 @@
                             <div class="span7">
                                 {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition["mountpoint"] }})<br/>
                                 <!-- ko with: partitions()[{{ loop.index - 1 }}] -->
-                                    <small>
+                                    <span class="tiny-text">
                                         <span data-bind="text: Math.round((used/total)*100)"></span>%
-                                    </small>
+                                    </span>
                                 <!-- /ko -->
                             </div>
                         </div>
@@ -68,9 +68,9 @@
                             </div>
                             <div class="span7">
                                 {{ _("Network") }}<br/>
-                                <small>
+                                <span class="tiny-text">
                                     {{ nic["name"] }}
-                                </small>
+                                </span>
                             </div>
                         </div>
                     </a>
