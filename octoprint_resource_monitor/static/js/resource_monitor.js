@@ -19,6 +19,8 @@ $(function() {
         self.memoryPlotData = null;
         self.partitionPlotData = [];
         self.networkPlotData = [];
+        self.lastSentBytes = [];
+        self.lastReceivedBytes = [];
 
         self.baseOptions =  {
             yaxis: {
@@ -113,7 +115,29 @@ $(function() {
                     self.networkPlotData.push([downloadData, uploadData]);
                 });
             }
-            // TODO update the data here
+            if(self.lastSentBytes.length === 0 || self.lastReceivedBytes.length === 0) {
+                newValue.forEach(function(network) {
+                    self.lastSentBytes.push(0);
+                    self.lastReceivedBytes.push(0);
+                });
+            }
+            self.networkPlotData.forEach(function(networkData, networkIndex) {
+                if(self.lastReceivedBytes[networkIndex] != 0 && self.lastSentBytes[networkIndex] != 0 ) {
+                    var download = newValue[networkIndex].bytes_recv - self.lastReceivedBytes[networkIndex];
+                    var upload = newValue[networkIndex].bytes_sent - self.lastSentBytes[networkIndex];
+                    networkData[0].push([self.currentPlotIndex, download]);
+                    networkData[1].push([self.currentPlotIndex, upload]);
+                    networkData[0].shift();
+                    networkData[1].shift();
+                } else {
+                    networkData[0].push([self.currentPlotIndex, 0]);
+                    networkData[1].push([self.currentPlotIndex, 0]);
+                    networkData[0].shift();
+                    networkData[1].shift();
+                }
+                self.lastReceivedBytes[networkIndex] = newValue[networkIndex].bytes_recv;
+                self.lastSentBytes[networkIndex] = newValue[networkIndex].bytes_sent;
+            });
             if(self.miniNetworkPlots.length != 0) {
                 self.miniNetworkPlots.forEach(function(plot, index) {
                     plot.setData(self.networkPlotData[index]);
