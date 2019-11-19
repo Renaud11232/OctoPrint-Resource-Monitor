@@ -37,6 +37,8 @@ div.resource-monitor-mini-plot {
     width: 100;
     display: grid;
     grid-auto-flow: row;
+    grid-row-gap: 2px;
+    grid-column-gap: 2px;
 }
 
 #tab_plugin_resource_monitor .cpu-grid-1 {
@@ -61,4 +63,9 @@ div.resource-monitor-mini-plot {
 
 #tab_plugin_resource_monitor .cpu-grid-8 {
     grid-template-columns: repeat(8, 1fr);
+}
+
+div.resource-monitor-cpu-core {
+    width: 100%;
+    height: 70px;
 }

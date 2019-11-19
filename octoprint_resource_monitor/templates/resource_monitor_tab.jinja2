@@ -88,9 +88,7 @@
                 {% endif %}
                 <div class="cpu-grid cpu-grid-{{ nb_columns }}">
                     {% for core in plugin_resource_monitor_cpu.cores %}
-                        <div>
-                            Coucou {{ loop.index - 1 }}
-                        </div>
+                        <div class="resource-monitor-cpu-core"></div>
                     {% endfor %}
                 </div>
             </div>

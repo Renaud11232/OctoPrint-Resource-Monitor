@@ -11,11 +11,13 @@ $(function() {
         self.currentPlotIndex = 60;
 
         self.miniCpuPlot = null;
+        self.cpuCorePlots = [];
         self.miniMemoryPlot = null;
         self.miniPartitionPlots = [];
         self.miniNetworkPlots = [];
 
         self.averageCpuPlotData = null;
+        self.cpuCorePlotData = [];
         self.memoryPlotData = null;
         self.partitionPlotData = [];
         self.networkPlotData = [];
@@ -52,13 +54,31 @@ $(function() {
                 }
                 self.averageCpuPlotData = [averageData];
             }
+            if(self.cpuCorePlotData.length === 0) {
+                newValue.cores.forEach(function(core, coreIndex) {
+                    var coreData = [];
+                    for(var i = 0; i < self.currentPlotIndex; i++) {
+                        coreData.push([i, 0]);
+                    }
+                    self.cpuCorePlotData.push([coreData]);
+                });
+            }
             self.averageCpuPlotData[0].push([self.currentPlotIndex, newValue.average]);
             self.averageCpuPlotData[0].shift();
+            self.cpuCorePlotData.forEach(function(coreData, coreIndex) {
+                coreData[0].push([self.currentPlotIndex, newValue.cores[coreIndex]]);
+                coreData[0].shift();
+            });
             if(self.miniCpuPlot != null) {
                 self.miniCpuPlot.setData(self.averageCpuPlotData);
                 self.miniCpuPlot.setupGrid();
                 self.miniCpuPlot.draw();
             }
+            self.cpuCorePlots.forEach(function(corePlot, coreIndex) {
+                corePlot.setData(self.cpuCorePlotData[coreIndex]);
+                corePlot.setupGrid();
+                corePlot.draw();
+            });
         });
 
         self.memory.subscribe(function(newValue) {
@@ -185,6 +205,13 @@ $(function() {
                 if(self.miniNetworkPlots.length === 0) {
                     $("div.resource-monitor-mini-network-plot").each(function() {
                         self.miniNetworkPlots.push($.plot($(this), [[]], self.baseOptions));
+                    });
+                }
+                if(self.cpuCorePlots.length === 0) {
+                    $("div.resource-monitor-cpu-core").each(function() {
+                        var plot = $.plot($(this), [[]], self.baseOptions);
+                        plot.getAxes().yaxis.options.max = 100;
+                        self.cpuCorePlots.push(plot);
                     });
                 }
             }
