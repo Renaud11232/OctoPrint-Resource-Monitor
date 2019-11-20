@@ -5,7 +5,7 @@
                 <a href="#resource_monitor_cpu_tab" data-toggle="tab">
                     <div class="row-fluid">
                         <div class="span5">
-                            <div id="resource-monitor-mini-cpu" class="resource-monitor-mini-plot"></div>
+                            <div id="resource-monitor-mini-cpu" class="mini-plot"></div>
                         </div>
                         <div class="span7">
                             {{ _("Processor") }}<br/>
@@ -23,7 +23,7 @@
                 <a href="#resource_monitor_memory_tab" data-toggle="tab">
                     <div class="row-fluid">
                         <div class="span5">
-                            <div id="resource-monitor-mini-memory" class="resource-monitor-mini-plot"></div>
+                            <div id="resource-monitor-mini-memory" class="mini-plot"></div>
                         </div>
                         <div class="span7">
                             {{ _("Memory") }}<br/>
@@ -45,7 +45,7 @@
                     <a data-toggle="tab" href="#resource_monitor_disk_{{ loop.index - 1 }}_tab" data-index="{{ loop.index - 1 }}">
                         <div class="row-fluid">
                             <div class="span5">
-                                <div class="resource-monitor-mini-plot resource-monitor-mini-partition-plot"></div>
+                                <div class="mini-plot resource-monitor-mini-partition-plot"></div>
                             </div>
                             <div class="span7">
                                 {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition.mountpoint }})<br/>
@@ -66,7 +66,7 @@
                     <a data-toggle="tab" href="#resource_monitor_network_{{ loop.index - 1 }}_tab" data-index="{{ loop.index - 1 }}">
                         <div class="row-fluid">
                             <div class="span5">
-                                <div class="resource-monitor-mini-plot resource-monitor-mini-network-plot"></div>
+                                <div class="mini-plot resource-monitor-mini-network-plot"></div>
                             </div>
                             <div class="span7">
                                 {{ _("Network") }} {{ loop.index - 1 }}<br/>
@@ -102,7 +102,7 @@
                     <div class="span12">
                         <div class="detail-plot-container cpu-grid cpu-grid-{{ nb_columns }}">
                             {% for core in plugin_resource_monitor_cpu.cores %}
-                                <div class="resource-monitor-detail-plot"></div>
+                                <div class="detail-plot"></div>
                             {% endfor %}
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                 </div>
                 <div class="row-fluid">
                     <div class="span12 detail-plot-container">
-                        <div class="resource-monitor-detail-plot"></div>
+                        <div class="detail-plot"></div>
                     </div>
                 </div>
                 <!-- ko with: memory() -->
@@ -168,7 +168,7 @@
                     </div>
                     <div class="row-fluid">
                         <div class="span4">
-                            <span class="tiny-text">{{ _("Total :") }}</span><br/>
+                            <span class="tiny-text">{{ _("Total") }}</span><br/>
                             <span data-bind="text: filesize(total, {round: 1})"></span>
                         </div>
                     </div>
@@ -176,7 +176,46 @@
             </div>
             {% for partition in plugin_resource_monitor_partitions %}
                 <div id="resource_monitor_disk_{{ loop.index - 1 }}_tab" class="tab-pane">
-                    Disk {{ loop.index - 1 }} details here
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <h4>{{ _("Disk") }} {{ loop.index - 1 }} ({{ partition.mountpoint }})</h4>
+                        </div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span12 detail-plot-container">
+                            <div class="detail-plot"></div>
+                        </div>
+                    </div>
+                    <!-- ko with: partitions()[{{ loop.index - 1 }}]-->
+                        <div class="row-fluid resource-details">
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Used") }}</span><br/>
+                                <span data-bind="text: filesize(used, {round: 1})"></span> (<span data-bind="text: Math.round(percent)"></span>%)
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Free") }}</span><br/>
+                                <span data-bind="text: filesize(free, {round: 1})"></span>
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Total") }}</span><br/>
+                                <span data-bind="text: filesize(total, {round: 1})"></span>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Mountpoint") }}</span><br/>
+                                <span data-bind="text: mountpoint"></span>
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Device") }}</span><br/>
+                                <span data-bind="text: device"></span>
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Type") }}</span><br/>
+                                <span data-bind="text: fstype"></span>
+                            </div>
+                        </div>
+                    <!-- /ko -->
                 </div>
             {% endfor %}
             {% for nic in plugin_resource_monitor_network %}

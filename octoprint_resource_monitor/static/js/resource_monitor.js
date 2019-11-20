@@ -15,6 +15,7 @@ $(function() {
         self.miniMemoryPlot = null;
         self.memoryPlot = null;
         self.miniPartitionPlots = [];
+        self.partitionPlots = [];
         self.miniNetworkPlots = [];
 
         self.averageCpuPlotData = null;
@@ -135,6 +136,13 @@ $(function() {
                 plot.setupGrid();
                 plot.draw();
             });
+            self.partitionPlots.forEach(function(plot, index) {
+                plot.getAxes().yaxis.options.max = newValue[index].total;
+                plot.getAxes().yaxis.options.tickSize = newValue[index].total / 10;
+                plot.setData(self.partitionPlotData[index]);
+                plot.setupGrid();
+                plot.draw();
+            });
         });
 
         self.network.subscribe(function(newValue) {
@@ -183,7 +191,7 @@ $(function() {
         new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if(mutation.attributeName === "class") {
-                    $("div.resource-monitor-mini-plot").css("background-color", $("body").css("background-color"));
+                    $("#tab_plugin_resource_monitor .mini-plot").css("background-color", $("body").css("background-color"));
                 }
             });
         }).observe($("html")[0], {
@@ -193,12 +201,18 @@ $(function() {
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
             var tabId = $(e.target).attr("href");
             if (tabId === "#resource_monitor_memory_tab") {
-                self.memoryPlot = $.plot($("#resource_monitor_memory_tab .resource-monitor-detail-plot"), [[]], self.baseOptions);
-                self.memoryPlot.getAxes().xaxis.options.show = true;
-                self.memoryPlot.getAxes().yaxis.options.show = true;
+                if(self.memoryPlot === null) {
+                    self.memoryPlot = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
+                    self.memoryPlot.getAxes().xaxis.options.show = true;
+                    self.memoryPlot.getAxes().yaxis.options.show = true;
+                }
             } else if (tabId.includes("#resource_monitor_disk_")) {
                 var index = parseInt($(e.target).attr("data-index"));
-                console.log("TODO : init disk " + index +" plot");
+                if(self.partitionPlots[index] === undefined) {
+                    self.partitionPlots[index] = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
+                    self.partitionPlots[index].getAxes().xaxis.options.show = true;
+                    self.partitionPlots[index].getAxes().yaxis.options.show = true;
+                }
             } else if (tabId.includes("#resource_monitor_network_")) {
                 var index = parseInt($(e.target).attr("data-index"));
                 console.log("TODO : init network " + index +" plot");
@@ -225,7 +239,7 @@ $(function() {
                     });
                 }
                 if(self.cpuCorePlots.length === 0) {
-                    $("#resource_monitor_cpu_tab .resource-monitor-detail-plot").each(function() {
+                    $("#resource_monitor_cpu_tab .detail-plot").each(function() {
                         var plot = $.plot($(this), [[]], self.baseOptions);
                         plot.getAxes().yaxis.options.max = 100;
                         plot.getAxes().xaxis.options.show = true;

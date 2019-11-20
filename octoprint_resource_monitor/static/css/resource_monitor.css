@@ -17,7 +17,7 @@
     border-left: 0px;
 }
 
-div.resource-monitor-mini-plot {
+#tab_plugin_resource_monitor .mini-plot {
     height: 40px;
     width: 60px;
     background-color: #ffffff;
@@ -61,7 +61,7 @@ div.resource-monitor-mini-plot {
     grid-template-columns: repeat(4, 1fr);
 }
 
-div.resource-monitor-detail-plot {
+#tab_plugin_resource_monitor .detail-plot {
     width: 100%;
     height: 100%;
 }
