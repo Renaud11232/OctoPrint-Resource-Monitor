@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 import psutil
 import octoprint.plugin
-import datetime
 from octoprint.util import RepeatedTimer
 
 

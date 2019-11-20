@@ -13,6 +13,7 @@ $(function() {
         self.miniCpuPlot = null;
         self.cpuCorePlots = [];
         self.miniMemoryPlot = null;
+        self.memoryPlot = null;
         self.miniPartitionPlots = [];
         self.miniNetworkPlots = [];
 
@@ -105,6 +106,13 @@ $(function() {
                 self.miniMemoryPlot.setupGrid();
                 self.miniMemoryPlot.draw();
             }
+            if(self.memoryPlot != null) {
+                self.memoryPlot.getAxes().yaxis.options.max = newValue.total;
+                self.memoryPlot.getAxes().yaxis.options.tickSize = newValue.total / 10;
+                self.memoryPlot.setData(self.memoryPlotData);
+                self.memoryPlot.setupGrid();
+                self.memoryPlot.draw();
+            }
         });
 
         self.partitions.subscribe(function(newValue) {
@@ -185,7 +193,9 @@ $(function() {
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
             var tabId = $(e.target).attr("href");
             if (tabId === "#resource_monitor_memory_tab") {
-                console.log("TODO : init memory plot");
+                self.memoryPlot = $.plot($("#resource_monitor_memory_tab .resource-monitor-detail-plot"), [[]], self.baseOptions);
+                self.memoryPlot.getAxes().xaxis.options.show = true;
+                self.memoryPlot.getAxes().yaxis.options.show = true;
             } else if (tabId.includes("#resource_monitor_disk_")) {
                 var index = parseInt($(e.target).attr("data-index"));
                 console.log("TODO : init disk " + index +" plot");
@@ -215,7 +225,7 @@ $(function() {
                     });
                 }
                 if(self.cpuCorePlots.length === 0) {
-                    $("div.resource-monitor-cpu-core").each(function() {
+                    $("#resource_monitor_cpu_tab .resource-monitor-detail-plot").each(function() {
                         var plot = $.plot($(this), [[]], self.baseOptions);
                         plot.getAxes().yaxis.options.max = 100;
                         plot.getAxes().xaxis.options.show = true;
