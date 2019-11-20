@@ -62,3 +62,7 @@ div.resource-monitor-cpu-core {
     width: 100%;
     height: 100%;
 }
+
+#tab_plugin_resource_monitor .resource-details {
+    margin-top: 15px;
+}

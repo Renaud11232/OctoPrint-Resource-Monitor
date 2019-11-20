@@ -27,10 +27,17 @@ $(function() {
         self.baseOptions =  {
             yaxis: {
                 min: 0,
-                show: false
+                show: false,
+                tickFormatter: function(value, axis) {
+                    return "";
+                },
             },
             xaxis: {
-                show: false
+                show: false,
+                tickFormatter: function(value, axis) {
+                    return "";
+                },
+                tickSize: 10
             },
             series: {
                 lines: {
@@ -42,7 +49,8 @@ $(function() {
             grid: {
                 borderWidth: 1,
                 margin: 0,
-                minBorderMargin: 0
+                minBorderMargin: 0,
+                labelMargin: 0
             }
         };
 
@@ -176,7 +184,6 @@ $(function() {
 
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
             var tabId = $(e.target).attr("href");
-            // TODO initialize plots and whatnots
             if (tabId === "#resource_monitor_memory_tab") {
                 console.log("TODO : init memory plot");
             } else if (tabId.includes("#resource_monitor_disk_")) {
@@ -211,6 +218,9 @@ $(function() {
                     $("div.resource-monitor-cpu-core").each(function() {
                         var plot = $.plot($(this), [[]], self.baseOptions);
                         plot.getAxes().yaxis.options.max = 100;
+                        plot.getAxes().xaxis.options.show = true;
+                        plot.getAxes().yaxis.options.show = true;
+                        plot.getAxes().yaxis.options.tickSize = 10;
                         self.cpuCorePlots.push(plot);
                     });
                 }

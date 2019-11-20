@@ -83,6 +83,7 @@
     <div class="span8">
         <div class="tab-content">
             <div id="resource_monitor_cpu_tab" class="tab-pane active">
+                <h4>{{ _("Processor") }}</h4>
                 {% set core_count = plugin_resource_monitor_cpu.cores|length %}
                 {% if core_count > 4 and core_count % 4 == 0 %}
                     {% set nb_columns = 4 %}
@@ -98,6 +99,40 @@
                         <div class="resource-monitor-cpu-core"></div>
                     {% endfor %}
                 </div>
+                <!-- ko with: cpu() -->
+                    <div class="resource-details">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Usage") }}</span><br/>
+                                <span data-bind="text: Math.round(average)"></span>%
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Processes") }}</span><br/>
+                                <span data-bind="text: pids"></span>
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Speed") }}</span><br/>
+                                <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> GHz
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Cores :") }}</span><br/>
+                                <span data-bind="text: core_count"></span>
+                            </div>
+                            <div class="span4">
+                                <span class="tiny-text">{{ _("Threads :") }}</span><br/>
+                                <span data-bind="text: thread_count"></span>
+                            </div>
+                            <!-- ko if: frequency.min > 0 -->
+                                <div class="span4">
+                                    <span class="tiny-text">{{ _("Base clock :") }}</span><br/>
+                                    <span data-bind="text: (frequency.min/1000).toFixed(2)"></span> GHz
+                                </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                <!-- /ko -->
             </div>
             <div id="resource_monitor_memory_tab" class="tab-pane">
                 Memory details here

@@ -2,8 +2,8 @@
 from __future__ import absolute_import
 
 import psutil
-import platform
 import octoprint.plugin
+import datetime
 from octoprint.util import RepeatedTimer
 
 
@@ -21,13 +21,11 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return 1
 
 	def check_resources(self):
-
 		message = dict(
 			cpu=self.get_cpu(),
 			memory=psutil.virtual_memory()._asdict(),
 			partitions=self.get_partitions(),
 			network=self.get_network()
-
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -51,7 +49,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			average=psutil.cpu_percent(),
 			frequency=psutil.cpu_freq()._asdict(),
 			core_count=psutil.cpu_count(logical=False),
-			thread_count=psutil.cpu_count(logical=True)
+			thread_count=psutil.cpu_count(logical=True),
+			pids=len(psutil.pids())
 		)
 	def get_template_vars(self):
 		return dict(
