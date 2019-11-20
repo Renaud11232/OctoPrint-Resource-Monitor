@@ -17,6 +17,7 @@ $(function() {
         self.miniPartitionPlots = [];
         self.partitionPlots = [];
         self.miniNetworkPlots = [];
+        self.networkPlots = [];
 
         self.averageCpuPlotData = null;
         self.cpuCorePlotData = [];
@@ -185,6 +186,19 @@ $(function() {
                 plot.setupGrid();
                 plot.draw();
             });
+            self.networkPlots.forEach(function(plot, index) {
+                var maxDownload = Math.max.apply(Math, self.networkPlotData[index][0].map(function(o) {
+                    return o[1];
+                }));
+                var maxUpload = Math.max.apply(Math, self.networkPlotData[index][1].map(function(o) {
+                    return o[1];
+                }));
+                plot.getAxes().yaxis.options.tickSize = Math.max(maxDownload, maxUpload) / 10;
+                plot.getAxes().yaxis.options.max = Math.max(maxDownload, maxUpload);
+                plot.setData(self.networkPlotData[index]);
+                plot.setupGrid();
+                plot.draw();
+            });
         });
 
         //Hacky way of supporting Themeify
@@ -215,7 +229,11 @@ $(function() {
                 }
             } else if (tabId.includes("#resource_monitor_network_")) {
                 var index = parseInt($(e.target).attr("data-index"));
-                console.log("TODO : init network " + index +" plot");
+                if(self.networkPlots[index] === undefined) {
+                    self.networkPlots[index] = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
+                    self.networkPlots[index].getAxes().xaxis.options.show = true;
+                    self.networkPlots[index].getAxes().yaxis.options.show = true;
+                }
             }
         });
 
