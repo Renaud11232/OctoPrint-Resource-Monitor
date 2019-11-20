@@ -1,0 +1,21 @@
+{% for partition in plugin_resource_monitor_partitions %}
+    <li>
+        <a data-toggle="tab" href="#resource_monitor_disk_{{ loop.index - 1 }}_tab" data-index="{{ loop.index - 1 }}">
+            <div class="row-fluid">
+                <div class="span5">
+                    <div class="mini-plot resource-monitor-mini-partition-plot"></div>
+                </div>
+                <div class="span7">
+                    {{ _("Disk") }} {{ loop.index - 1 }} ({{ partition.mountpoint }})<br/>
+                    <span class="tiny-text">
+                        <!-- ko with: partitions()[{{ loop.index - 1 }}] -->
+                            <span data-bind="text: Math.round(percent)"></span>%
+                            {{ _("of") }}
+                            <span data-bind="text: filesize(total, {round: 1})"></span>
+                        <!-- /ko -->
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endfor %}

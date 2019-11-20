@@ -1,0 +1,17 @@
+{% for nic in plugin_resource_monitor_network %}
+    <li>
+        <a data-toggle="tab" href="#resource_monitor_network_{{ loop.index - 1 }}_tab" data-index="{{ loop.index - 1 }}">
+            <div class="row-fluid">
+                <div class="span5">
+                    <div class="mini-plot resource-monitor-mini-network-plot"></div>
+                </div>
+                <div class="span7">
+                    {{ _("Network") }} {{ loop.index - 1 }}<br/>
+                    <span class="tiny-text">
+                        {{ nic.name }}
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endfor %}

@@ -1,0 +1,44 @@
+{% for partition in plugin_resource_monitor_partitions %}
+    <div id="resource_monitor_disk_{{ loop.index - 1 }}_tab" class="tab-pane">
+        <div class="row-fluid">
+            <div class="span12">
+                <h4>{{ _("Disk") }} {{ loop.index - 1 }} ({{ partition.mountpoint }})</h4>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 detail-plot-container">
+                <div class="detail-plot"></div>
+            </div>
+        </div>
+        <!-- ko with: partitions()[{{ loop.index - 1 }}]-->
+            <div class="row-fluid resource-details">
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Used") }}</span><br/>
+                    <span data-bind="text: filesize(used, {round: 1})"></span> (<span data-bind="text: Math.round(percent)"></span>%)
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Free") }}</span><br/>
+                    <span data-bind="text: filesize(free, {round: 1})"></span>
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Total") }}</span><br/>
+                    <span data-bind="text: filesize(total, {round: 1})"></span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Mountpoint") }}</span><br/>
+                    <span data-bind="text: mountpoint"></span>
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Device") }}</span><br/>
+                    <span data-bind="text: device"></span>
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Type") }}</span><br/>
+                    <span data-bind="text: fstype"></span>
+                </div>
+            </div>
+        <!-- /ko -->
+    </div>
+{% endfor %}

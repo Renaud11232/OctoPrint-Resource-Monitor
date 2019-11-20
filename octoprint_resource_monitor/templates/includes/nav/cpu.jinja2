@@ -1,0 +1,18 @@
+<li class="active">
+    <a href="#resource_monitor_cpu_tab" data-toggle="tab">
+        <div class="row-fluid">
+            <div class="span5">
+                <div id="resource-monitor-mini-cpu" class="mini-plot"></div>
+            </div>
+            <div class="span7">
+                {{ _("Processor") }}<br/>
+                <span class="tiny-text">
+                    <!-- ko with: cpu() -->
+                        <span data-bind="text: Math.round(average)"></span>%
+                        <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> GHz
+                    <!-- /ko -->
+                </span>
+            </div>
+        </div>
+    </a>
+</li>
