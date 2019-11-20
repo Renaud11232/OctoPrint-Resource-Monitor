@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import psutil
+import platform
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
 
@@ -48,7 +49,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return dict(
 			cores=psutil.cpu_percent(percpu=True),
 			average=psutil.cpu_percent(),
-			frequency=psutil.cpu_freq()._asdict()
+			frequency=psutil.cpu_freq()._asdict(),
+			core_count=psutil.cpu_count(logical=False),
+			thread_count=psutil.cpu_count(logical=True)
 		)
 	def get_template_vars(self):
 		return dict(

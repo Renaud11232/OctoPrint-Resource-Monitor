@@ -34,7 +34,8 @@ div.resource-monitor-mini-plot {
 }
 
 #tab_plugin_resource_monitor .cpu-grid {
-    width: 100;
+    width: 100%;
+    height: 250px;
     display: grid;
     grid-auto-flow: row;
     grid-row-gap: 2px;
@@ -59,20 +60,5 @@ div.resource-monitor-mini-plot {
 
 div.resource-monitor-cpu-core {
     width: 100%;
-}
-
-#tab_plugin_resource_monitor .cpu-grid-1 div.resource-monitor-cpu-core {
-    height: 280px;
-}
-
-#tab_plugin_resource_monitor .cpu-grid-2 div.resource-monitor-cpu-core {
-    height: 140px;
-}
-
-#tab_plugin_resource_monitor .cpu-grid-3 div.resource-monitor-cpu-core {
-    height: 93px;
-}
-
-#tab_plugin_resource_monitor .cpu-grid-4 div.resource-monitor-cpu-core {
-    height: 70px;
+    height: 100%;
 }
