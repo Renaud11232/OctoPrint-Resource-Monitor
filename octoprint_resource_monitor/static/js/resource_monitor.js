@@ -34,6 +34,7 @@ $(function() {
                 tickFormatter: function(value, axis) {
                     return "";
                 },
+                ticks: 10
             },
             xaxis: {
                 show: false,
