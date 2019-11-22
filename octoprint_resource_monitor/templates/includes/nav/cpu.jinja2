@@ -9,7 +9,7 @@
                 <span class="tiny-text">
                     <!-- ko with: cpu() -->
                         <span data-bind="text: Math.round(average)"></span>%
-                        <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> GHz
+                        <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> {{ _("GHz") }}
                     <!-- /ko -->
                 </span>
             </div>

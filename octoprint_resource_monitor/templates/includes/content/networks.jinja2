@@ -22,7 +22,7 @@
                     </div>
                 <div class="span4">
                     <span class="tiny-text">{{ _("Link Speed") }}</span><br/>
-                    <span data-bind="text: speed >= 1000 ? speed / 1000 : speed"></span> <span data-bind="text: speed >= 1000 ? 'Gb' : 'Mb'"></span>/s
+                    <span data-bind="text: speed >= 1000 ? speed / 1000 : speed"></span> <span data-bind="text: speed >= 1000 ? '{{ _('Gb') }}' : '{{ _('Mb') }}'"></span>/s
                 </div>
             </div>
             <div class="row-fluid">
