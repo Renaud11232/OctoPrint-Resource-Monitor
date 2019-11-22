@@ -1,6 +1,10 @@
 # OctoPrint-Resource-Monitor
 
-**TODO:** Describe what your plugin does.
+This plugin adds a neat tab containing various information and graphs about your system resource usage.
+
+It displays information about your CPU, memory, disks and network usage.
+
+## Screenshots
 
 ## Setup
 
@@ -9,9 +13,3 @@ or manually using this URL:
 
     https://github.com/Renaud11232/OctoPrint-Resource-Monitor/archive/master.zip
 
-**TODO:** Describe how to install your plugin, if more needs to be done than just installing it via pip or through
-the plugin manager.
-
-## Configuration
-
-**TODO:** Describe your plugin's configuration options (if any).
