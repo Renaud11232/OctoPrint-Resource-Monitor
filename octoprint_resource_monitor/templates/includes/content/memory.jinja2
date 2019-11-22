@@ -16,11 +16,15 @@
                 <span data-bind="text: filesize(used, {round: 1})"></span> (<span data-bind="text: Math.round(percent)"></span>%)
             </div>
             <div class="span4">
-                <span class="tiny-text" title="{{ _('Free memory is the amount of memory which is currently not used for anything.') }}">{{ _("Free") }}</span><br/>
+                <abbr title="{{ _('Free memory is the amount of memory which is currently not used for anything.') }}">
+                    <span class="tiny-text">{{ _("Free") }}</span>
+                </abbr><br/>
                 <span data-bind="text: filesize(free, {round: 1})"></span>
             </div>
             <div class="span4">
-                <span class="tiny-text" title="{{ _('Available memory is the amount of memory which is available for allocation to a new process or to existing processes.') }}">{{ _("Available") }}</span><br/>
+                <abbr title="{{ _('Available memory is the amount of memory which is available for allocation to a new process or to existing processes.') }}">
+                    <span class="tiny-text">{{ _("Available") }}</span>
+                </abbr><br/>
                 <span data-bind="text: filesize(available, {round: 1})"></span>
             </div>
         </div>
