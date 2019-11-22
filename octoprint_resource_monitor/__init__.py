@@ -6,15 +6,9 @@ import octoprint.plugin
 from octoprint.util import RepeatedTimer
 
 
-class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
-							octoprint.plugin.StartupPlugin,
+class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
 							octoprint.plugin.AssetPlugin,
 							octoprint.plugin.TemplatePlugin):
-
-	def get_settings_defaults(self):
-		return dict(
-			# put your plugin's default settings here
-		)
 
 	def interval(self):
 		return 1
