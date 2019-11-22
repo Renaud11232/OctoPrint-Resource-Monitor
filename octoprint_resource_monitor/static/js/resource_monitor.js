@@ -56,6 +56,10 @@ $(function() {
                 margin: 0,
                 minBorderMargin: 0,
                 labelMargin: 0
+            },
+            legend: {
+                position: "sw",
+                backgroundOpacity: 0
             }
         };
 
@@ -205,7 +209,16 @@ $(function() {
                 }));
                 plot.getAxes().yaxis.options.tickSize = Math.max(maxDownload, maxUpload) / 10;
                 plot.getAxes().yaxis.options.max = Math.max(maxDownload, maxUpload);
-                plot.setData(self.networkPlotData[index]);
+                plot.setData([
+                    {
+                        data: self.networkPlotData[index][0],
+                        label: gettext("Download")
+                    },
+                    {
+                        data: self.networkPlotData[index][1],
+                        label: gettext("Upload")
+                    }
+                ]);
                 plot.setupGrid();
                 plot.draw();
             });
