@@ -26,13 +26,13 @@
                 </div>
             </div>
             <div class="row-fluid">
-                <!-- ko with: addrs.find(function(address){return address.family === 2;}) -->
+                <!-- ko with: addrs.find(function(address){return address.family === 2 || address.family === 10;}) -->
                     <div class="span4">
                         <span class="tiny-text">{{ _("IPv4 address") }}</span><br/>
                         <span data-bind="text: address"></span>
                     </div>
                 <!-- /ko -->
-                <!-- ko with: addrs.find(function(address){return address.family === -1;}) -->
+                <!-- ko with: addrs.find(function(address){return address.family === -1 || address.family === 17;}) -->
                     <div class="span8">
                         <span class="tiny-text">{{ _("MAC address") }}</span><br/>
                         <span data-bind="text: address"></span>
