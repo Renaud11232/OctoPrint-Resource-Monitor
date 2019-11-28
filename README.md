@@ -4,7 +4,9 @@ This plugin adds a neat tab containing various information and graphs about your
 
 It displays information about your CPU, memory, disks and network usage.
 
-## Screenshots
+## Screenshot
+
+![CPU Usage Screenshot](.github/img/cpu.png)
 
 ## Setup
 

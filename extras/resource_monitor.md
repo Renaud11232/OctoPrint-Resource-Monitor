@@ -25,18 +25,21 @@ tags:
 - processor
 - usage
 
-# TODO
 screenshots:
-- url: url of a screenshot, /assets/img/...
-  alt: alt-text of a screenshot
-  caption: caption of a screenshot
-- url: url of another screenshot, /assets/img/...
-  alt: alt-text of another screenshot
-  caption: caption of another screenshot
-- ...
+- url: /assets/img/plugins/resource_monitor/cpu.png
+  alt: CPU
+  caption: Processor usage
+- url: /assets/img/plugins/resource_monitor/memory.png
+  alt: Memory
+  caption: Memory usage
+- url: /assets/img/plugins/resource_monitor/disk.png
+  alt: Disk
+  caption: Disk usage
+- url: /assets/img/plugins/resource_monitor/network.png
+  alt: Network
+  caption: Network usage
 
-# TODO
-featuredimage: url of a featured image for your plugin, /assets/img/...
+featuredimage: /assets/img/plugins/resource_monitor/cpu.png
 
 compatibility:
   octoprint:
