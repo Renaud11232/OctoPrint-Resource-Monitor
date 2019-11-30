@@ -15,8 +15,6 @@ plugin_additional_packages = []
 plugin_ignored_packages = []
 additional_setup_parameters = {}
 
-########################################################################################################################
-
 from setuptools import setup
 
 try:
