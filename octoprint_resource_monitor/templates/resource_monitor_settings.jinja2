@@ -1,0 +1,18 @@
+<h3>{{ _('Resource Monitor Settings') }}</h3>
+<div class="alert alert-info">
+    {{ _("You may have to restart OctoPrint for these settings to take effect.") }}
+</div>
+<div>
+    <form class="form-horizontal">
+        <div class="control-group">
+            <label class="control-label" for="resource_monitor_network_exceptions">{{ _('Network Exceptions') }}</label>
+            <div class="controls">
+                <select id="resource_monitor_network_exceptions" class="span6" multiple="true" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.network.exceptions">
+                    {% for nic in plugin_resource_monitor_all_network %}
+                        <option value="{{ nic.name }}">{{ nic.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
+</div>

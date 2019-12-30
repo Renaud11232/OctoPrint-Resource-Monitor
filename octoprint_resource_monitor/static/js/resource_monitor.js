@@ -2,6 +2,8 @@ $(function() {
     function ResourceMonitorViewModel(parameters) {
         var self = this;
 
+        self.settingsViewModel = parameters[0];
+
         self.cpu = ko.observable();
         self.memory = ko.observable();
         self.partitions = ko.observableArray();
@@ -306,9 +308,12 @@ $(function() {
 
     OCTOPRINT_VIEWMODELS.push({
         construct: ResourceMonitorViewModel,
-        dependencies: [],
+        dependencies: [
+            "settingsViewModel"
+        ],
         elements: [
-            "#tab_plugin_resource_monitor"
+            "#tab_plugin_resource_monitor",
+            "#settings_plugin_resource_monitor"
         ]
     });
 });

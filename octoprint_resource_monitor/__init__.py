@@ -6,9 +6,23 @@ import octoprint.plugin
 from octoprint.util import RepeatedTimer
 
 
-class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
+class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
+							octoprint.plugin.StartupPlugin,
 							octoprint.plugin.AssetPlugin,
 							octoprint.plugin.TemplatePlugin):
+
+	def get_settings_defaults(self):
+		return dict(
+			network=dict(
+				exceptions=[]
+			)
+		)
+
+	def get_settings_version(self):
+		return 1
+
+	def on_settings_initialized(self):
+		self.__network_exceptions = self._settings.get(["network", "exceptions"])
 
 	def interval(self):
 		return 1
@@ -18,7 +32,7 @@ class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
 			cpu=self.get_cpu(),
 			memory=psutil.virtual_memory()._asdict(),
 			partitions=self.get_partitions(),
-			network=self.get_network(),
+			network=self.get_network(all=False),
 			temperatures=self.get_temps()
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
@@ -46,10 +60,12 @@ class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
 			thread_count=psutil.cpu_count(logical=True),
 			pids=len(psutil.pids())
 		)
+
 	def get_template_vars(self):
 		return dict(
 			partitions=self.get_partitions(),
-			network=self.get_network(),
+			network=self.get_network(all=False),
+			all_network=self.get_network(all=True),
 			cpu=self.get_cpu()
 		)
 
@@ -59,19 +75,20 @@ class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
 			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
 		return partitions
 
-	def get_network(self):
+	def get_network(self, all):
 		io_counters = psutil.net_io_counters(pernic=True)
 		addrs = psutil.net_if_addrs()
 		stats = psutil.net_if_stats()
 		final = []
 		for nic_name in io_counters:
-			nic = dict(
-				name=nic_name,
-				addrs=[addr._asdict() for addr in addrs[nic_name]]
-			)
-			nic.update(io_counters[nic_name]._asdict())
-			nic.update(stats[nic_name]._asdict())
-			final.append(nic)
+			if all or nic_name not in self.__network_exceptions:
+				nic = dict(
+					name=nic_name,
+					addrs=[addr._asdict() for addr in addrs[nic_name]]
+				)
+				nic.update(io_counters[nic_name]._asdict())
+				nic.update(stats[nic_name]._asdict())
+				final.append(nic)
 		return final
 
 	def get_temps(self):
