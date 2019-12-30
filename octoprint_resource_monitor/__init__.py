@@ -18,7 +18,8 @@ class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
 			cpu=self.get_cpu(),
 			memory=psutil.virtual_memory()._asdict(),
 			partitions=self.get_partitions(),
-			network=self.get_network()
+			network=self.get_network(),
+			temperatures=self.get_temps()
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -72,6 +73,15 @@ class ResourceMonitorPlugin(octoprint.plugin.StartupPlugin,
 			nic.update(stats[nic_name]._asdict())
 			final.append(nic)
 		return final
+
+	def get_temps(self):
+		if hasattr(psutil, "sensors_temperatures"):
+			temps = psutil.sensors_temperatures()
+			for sensor in temps:
+				temps[sensor] = [temp._as_dict() for temp in temps[sensor]]
+			return temps
+		else:
+			return dict()
 
 	def get_update_information(self):
 		return dict(
