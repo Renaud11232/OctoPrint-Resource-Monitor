@@ -15,6 +15,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return dict(
 			network=dict(
 				exceptions=[]
+			),
+			disk=dict(
+				exceptions=[]
 			)
 		)
 
@@ -23,6 +26,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def on_settings_initialized(self):
 		self.__network_exceptions = self._settings.get(["network", "exceptions"])
+		self.__disk_exceptions = self._settings.get(["disk", "exceptions"])
 
 	def interval(self):
 		return 1
@@ -31,7 +35,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		message = dict(
 			cpu=self.get_cpu(),
 			memory=psutil.virtual_memory()._asdict(),
-			partitions=self.get_partitions(),
+			partitions=self.get_partitions(all=False),
 			network=self.get_network(all=False),
 			temperatures=self.get_temps()
 		)
@@ -63,14 +67,15 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def get_template_vars(self):
 		return dict(
-			partitions=self.get_partitions(),
+			partitions=self.get_partitions(all=False),
+			all_partitions=self.get_partitions(all=True),
 			network=self.get_network(all=False),
 			all_network=self.get_network(all=True),
 			cpu=self.get_cpu()
 		)
 
-	def get_partitions(self):
-		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype]
+	def get_partitions(self, all):
+		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)]
 		for partition in partitions:
 			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
 		return partitions
