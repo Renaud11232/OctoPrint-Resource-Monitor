@@ -54,5 +54,13 @@
                 </div>
             <!-- /ko -->
         </div>
+        <div class="row-fluid">
+            <!-- ko if: temp.current -->
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Temperature") }}</span><br/>
+                    <span data-bind="text: temp.current"></span> {{ _("°C") }}
+                </div>
+            <!-- /ko -->
+        </div>
     <!-- /ko -->
 </div>

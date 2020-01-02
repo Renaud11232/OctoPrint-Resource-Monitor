@@ -36,8 +36,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			cpu=self.get_cpu(),
 			memory=psutil.virtual_memory()._asdict(),
 			partitions=self.get_partitions(all=False),
-			network=self.get_network(all=False),
-			temperatures=self.get_temps()
+			network=self.get_network(all=False)
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -62,7 +61,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			frequency=psutil.cpu_freq()._asdict(),
 			core_count=psutil.cpu_count(logical=False),
 			thread_count=psutil.cpu_count(logical=True),
-			pids=len(psutil.pids())
+			pids=len(psutil.pids()),
+			temp=self.get_cpu_temp()
 		)
 
 	def get_template_vars(self):
@@ -96,12 +96,13 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				final.append(nic)
 		return final
 
-	def get_temps(self):
+	def get_cpu_temp(self):
 		if hasattr(psutil, "sensors_temperatures"):
 			temps = psutil.sensors_temperatures()
-			for sensor in temps:
-				temps[sensor] = [temp._as_dict() for temp in temps[sensor]]
-			return temps
+		else:
+			temps = None
+		if temps and "coretemp" in temps:
+			return temps["coretemp"][0]
 		else:
 			return dict()
 
