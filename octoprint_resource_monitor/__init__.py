@@ -102,7 +102,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		else:
 			temps = None
 		if temps and "coretemp" in temps:
-			return temps["coretemp"][0]
+			return temps["coretemp"][0]._asdict()
 		else:
 			return dict()
 
