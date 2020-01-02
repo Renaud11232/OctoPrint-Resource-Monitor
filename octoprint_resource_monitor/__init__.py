@@ -101,10 +101,12 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			temps = psutil.sensors_temperatures()
 		else:
 			temps = None
-		if temps and "coretemp" in temps:
-			return temps["coretemp"][0]._asdict()
-		else:
-			return dict()
+		if temps:
+			if "coretemp" in temps:
+				return temps["coretemp"][0]._asdict()
+			if "cpu-thermal" in temps:
+				return temps["cpu-thermal"][0]._asdict()
+		return dict()
 
 	def get_update_information(self):
 		return dict(
