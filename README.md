@@ -1,4 +1,4 @@
-# OctoPrint-Resource-Monitor
+# OctoPrint-Resource-Monitor [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UD54SHVYDV6NU&source=url)
 
 This plugin adds a neat tab containing various information and graphs about your system resource usage.
 
@@ -37,3 +37,7 @@ plugins:
 ## Need help ?
 
 If you need help please [open an issue](https://github.com/Renaud11232/OctoPrint-Resource-Monitor/issues/new).
+
+## Donations
+
+If you like what I have done and feel generous, you can thank me by [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UD54SHVYDV6NU&source=url). Any amount is fine, I'll still be very thankful.
