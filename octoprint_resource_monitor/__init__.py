@@ -34,6 +34,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def check_resources(self):
 		message = dict(
 			cpu=self.get_cpu(),
+			temp=self.get_cpu_temp(),
 			memory=psutil.virtual_memory()._asdict(),
 			partitions=self.get_partitions(all=False),
 			network=self.get_network(all=False)
@@ -61,8 +62,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			frequency=psutil.cpu_freq()._asdict(),
 			core_count=psutil.cpu_count(logical=False),
 			thread_count=psutil.cpu_count(logical=True),
-			pids=len(psutil.pids()),
-			temp=self.get_cpu_temp()
+			pids=len(psutil.pids())
 		)
 
 	def get_template_vars(self):
@@ -71,7 +71,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			all_partitions=self.get_partitions(all=True),
 			network=self.get_network(all=False),
 			all_network=self.get_network(all=True),
-			cpu=self.get_cpu()
+			cpu=self.get_cpu(),
+			temp=self.get_cpu_temp()
 		)
 
 	def get_partitions(self, all):

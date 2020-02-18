@@ -2,6 +2,7 @@
     <div class="span4">
         <ul class="nav nav-list">
             {% include "includes/nav/cpu.jinja2" %}
+            {% include "includes/nav/temp.jinja2" %}
             {% include "includes/nav/memory.jinja2" %}
             {% include "includes/nav/disks.jinja2" %}
             {% include "includes/nav/networks.jinja2" %}
@@ -10,6 +11,7 @@
     <div class="span8">
         <div class="tab-content">
             {% include "includes/content/cpu.jinja2" %}
+            {% include "includes/content/temp.jinja2" %}
             {% include "includes/content/memory.jinja2" %}
             {% include "includes/content/disks.jinja2" %}
             {% include "includes/content/networks.jinja2" %}

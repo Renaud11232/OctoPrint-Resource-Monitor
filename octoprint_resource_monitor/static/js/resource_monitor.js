@@ -5,6 +5,7 @@ $(function() {
         self.settingsViewModel = parameters[0];
 
         self.cpu = ko.observable();
+        self.temp = ko.observable();
         self.memory = ko.observable();
         self.partitions = ko.observableArray();
         self.network = ko.observableArray();
@@ -15,6 +16,8 @@ $(function() {
 
         self.miniCpuPlot = null;
         self.cpuCorePlots = [];
+        self.miniTempPlot = null;
+        self.tempPlot = null;
         self.miniMemoryPlot = null;
         self.memoryPlot = null;
         self.miniPartitionPlots = [];
@@ -24,6 +27,7 @@ $(function() {
 
         self.averageCpuPlotData = null;
         self.cpuCorePlotData = [];
+        self.tempPlotData = null;
         self.memoryPlotData = null;
         self.partitionPlotData = [];
         self.networkPlotData = [];
@@ -98,6 +102,31 @@ $(function() {
                 corePlot.setupGrid();
                 corePlot.draw();
             });
+        });
+
+        self.temp.subscribe(function(newValue) {
+            if(self.tempPlotData === null) {
+                var tempData = [];
+                for(var i = 0; i < self.currentPlotIndex; i++) {
+                    tempData.push([i, 0]);
+                }
+                self.tempPlotData = [tempData];
+            }
+            self.tempPlotData[0].push([self.currentPlotIndex, newValue.current]);
+            self.tempPlotData[0].shift();
+            if(self.miniTempPlot != null) {
+                self.miniTempPlot.getAxes().yaxis.options.max = newValue.critical;
+                self.miniTempPlot.setData(self.tempPlotData);
+                self.miniTempPlot.setupGrid();
+                self.miniTempPlot.draw();
+            }
+            if(self.tempPlot != null) {
+                self.tempPlot.getAxes().yaxis.options.max = newValue.critical;
+                self.tempPlot.getAxes().yaxis.options.tickSize = newValue.critical / 10;
+                self.tempPlot.setData(self.tempPlotData);
+                self.tempPlot.setupGrid();
+                self.tempPlot.draw();
+            }
         });
 
         self.memory.subscribe(function(newValue) {
@@ -239,7 +268,13 @@ $(function() {
 
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
             var tabId = $(e.target).attr("href");
-            if (tabId === "#resource_monitor_memory_tab") {
+            if (tabId === "#resource_monitor_temp_tab") {
+                if(self.tempPlot === null) {
+                    self.tempPlot = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
+                    self.tempPlot.getAxes().xaxis.options.show = true;
+                    self.tempPlot.getAxes().yaxis.options.show = true;
+                }
+            } else if (tabId === "#resource_monitor_memory_tab") {
                 if(self.memoryPlot === null) {
                     self.memoryPlot = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
                     self.memoryPlot.getAxes().xaxis.options.show = true;
@@ -267,6 +302,9 @@ $(function() {
                 if(self.miniCpuPlot === null) {
                     self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], self.baseOptions);
                     self.miniCpuPlot.getAxes().yaxis.options.max = 100;
+                }
+                if(self.miniTempPlot === null) {
+                    self.miniTempPlot = $.plot($("#resource-monitor-mini-temp"), [[]], self.baseOptions);
                 }
                 if(self.miniMemoryPlot === null) {
                     self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
@@ -300,6 +338,7 @@ $(function() {
                 self.memory(message.memory);
                 self.partitions(message.partitions);
                 self.network(message.network);
+                self.temp(message.temp);
 
                 self.currentPlotIndex++;
             }

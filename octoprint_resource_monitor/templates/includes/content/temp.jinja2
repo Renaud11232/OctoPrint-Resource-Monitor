@@ -1,0 +1,30 @@
+{% if plugin_resource_monitor_temp %}
+    <div id="resource_monitor_temp_tab" class="tab-pane">
+        <div class="row-fluid">
+            <div class="span12">
+                <h4>{{ _("Temperature") }}</h4>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 detail-plot-container">
+                <div class="detail-plot"></div>
+            </div>
+        </div>
+        <!-- ko with: temp() -->
+            <div class="row-fluid resource-details">
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Current") }}</span><br/>
+                    <span data-bind="text: current"></span> {{ _('°C') }}
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("High") }}</span><br/>
+                    <span data-bind="text: high"></span> {{ _('°C') }}
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Critical") }}</span><br/>
+                    <span data-bind="text: critical"></span> {{ _('°C') }}
+                </div>
+            </div>
+        <!-- /ko -->
+    </div>
+{% endif %}

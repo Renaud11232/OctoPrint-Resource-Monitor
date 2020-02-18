@@ -1,0 +1,19 @@
+{% if plugin_resource_monitor_temp %}
+    <li>
+        <a href="#resource_monitor_temp_tab" data-toggle="tab">
+            <div class="row-fluid">
+                <div class="span5">
+                    <div id="resource-monitor-mini-temp" class="mini-plot"></div>
+                </div>
+                <div class="span7">
+                    {{ _("Temperature") }}<br/>
+                    <span class="tiny-text">
+                        <!-- ko with: temp() -->
+                            <span data-bind="text: current"></span> {{ _('°C') }}
+                        <!-- /ko -->
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endif %}
