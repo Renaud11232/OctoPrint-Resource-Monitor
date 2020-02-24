@@ -115,14 +115,11 @@ $(function() {
             self.tempPlotData[0].push([self.currentPlotIndex, newValue.current]);
             self.tempPlotData[0].shift();
             if(self.miniTempPlot != null) {
-                self.miniTempPlot.getAxes().yaxis.options.max = newValue.critical;
                 self.miniTempPlot.setData(self.tempPlotData);
                 self.miniTempPlot.setupGrid();
                 self.miniTempPlot.draw();
             }
             if(self.tempPlot != null) {
-                self.tempPlot.getAxes().yaxis.options.max = newValue.critical;
-                self.tempPlot.getAxes().yaxis.options.tickSize = newValue.critical / 10;
                 self.tempPlot.setData(self.tempPlotData);
                 self.tempPlot.setupGrid();
                 self.tempPlot.draw();
@@ -273,6 +270,7 @@ $(function() {
                     self.tempPlot = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
                     self.tempPlot.getAxes().xaxis.options.show = true;
                     self.tempPlot.getAxes().yaxis.options.show = true;
+                    self.tempPlot.getAxes().yaxis.options.max = 100;
                 }
             } else if (tabId === "#resource_monitor_memory_tab") {
                 if(self.memoryPlot === null) {
@@ -305,6 +303,7 @@ $(function() {
                 }
                 if(self.miniTempPlot === null) {
                     self.miniTempPlot = $.plot($("#resource-monitor-mini-temp"), [[]], self.baseOptions);
+                    self.miniTempPlot.getAxes().yaxis.options.max = 100;
                 }
                 if(self.miniMemoryPlot === null) {
                     self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
