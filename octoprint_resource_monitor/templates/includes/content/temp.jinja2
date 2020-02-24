@@ -14,7 +14,7 @@
             <div class="row-fluid resource-details">
                 <div class="span4">
                     <span class="tiny-text">{{ _("Current") }}</span><br/>
-                    <span data-bind="text: current"></span> {{ _('°C') }}
+                    <span data-bind="text: current.toFixed(1)"></span> {{ _('°C') }}
                 </div>
             </div>
         <!-- /ko -->
