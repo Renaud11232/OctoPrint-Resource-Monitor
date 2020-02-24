@@ -9,7 +9,7 @@
                     {{ _("Temperature") }}<br/>
                     <span class="tiny-text">
                         <!-- ko with: temp() -->
-                            <span data-bind="text: current"></span> {{ _('°C') }}
+                            <span data-bind="text: current.toFixed(1)"></span> {{ _('°C') }}
                         <!-- /ko -->
                     </span>
                 </div>
