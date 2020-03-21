@@ -54,6 +54,8 @@ compatibility:
   - macos
   - freebsd
 
+  python: ">=2.7,<4"
+
 ---
 
 This plugin adds a neat tab containing various information and graphs about your system resource usage.
