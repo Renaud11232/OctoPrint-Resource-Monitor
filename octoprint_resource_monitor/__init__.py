@@ -73,7 +73,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			network=self.get_network(all=False),
 			all_network=self.get_network(all=True),
 			cpu=self.get_cpu(),
-			temp=self.get_cpu_temp()
+			temp=self.get_cpu_temp(),
+			battery=self.get_battery()
 		)
 
 	def get_partitions(self, all):
