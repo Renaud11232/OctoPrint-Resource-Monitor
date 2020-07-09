@@ -18,7 +18,7 @@
                 </div>
                 <div class="span4">
                     <span class="tiny-text">{{ _("Remaining") }}</span><br/>
-                    <span data-bind="text: Math.floor(secsleft/60)"></span> {{ _('minutes') }}
+                    <span data-bind="text: secsleft < 0? '&infin;': Math.floor(secsleft/60)"></span> {{ _('minutes') }}
                 </div>
                 <div class="span4">
                     <span class="tiny-text">{{ _("Charging") }}</span><br/>
