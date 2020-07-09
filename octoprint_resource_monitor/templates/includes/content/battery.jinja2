@@ -1,0 +1,22 @@
+{% if plugin_resource_monitor_battery %}
+    <div id="resource_monitor_battery_tab" class="tab-pane">
+        <div class="row-fluid">
+            <div class="span12">
+                <h4>{{ _("Battery") }}</h4>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12 detail-plot-container">
+                <div class="detail-plot"></div>
+            </div>
+        </div>
+        <!-- ko with: battery() -->
+            <div class="row-fluid resource-details">
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Current") }}</span><br/>
+                    <span data-bind="text: percent.toFixed(1)"></span> {{ _('%') }}
+                </div>
+            </div>
+        <!-- /ko -->
+    </div>
+{% endif %}
