@@ -13,8 +13,16 @@
         <!-- ko with: battery() -->
             <div class="row-fluid resource-details">
                 <div class="span4">
-                    <span class="tiny-text">{{ _("Current") }}</span><br/>
+                    <span class="tiny-text">{{ _("Charge") }}</span><br/>
                     <span data-bind="text: percent.toFixed(1)"></span> {{ _('&#37') }}
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Remaining") }}</span><br/>
+                    <span data-bind="text: Math.floor(secsleft/60)"></span> {{ _('minutes') }}
+                </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Charging") }}</span><br/>
+                    <span data-bind="text: power_plugged? 'Yes':'No' "></span>
                 </div>
             </div>
         <!-- /ko -->
