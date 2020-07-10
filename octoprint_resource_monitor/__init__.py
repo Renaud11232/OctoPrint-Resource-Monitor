@@ -115,7 +115,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		bat = psutil.sensors_battery()
 		if bat:
 			return bat._asdict()
-		return None
+		return dict()
 
 	def get_update_information(self):
 		return dict(
