@@ -1,0 +1,19 @@
+{% if plugin_resource_monitor_battery %}
+    <li>
+        <a href="#resource_monitor_battery_tab" data-toggle="tab">
+            <div class="row-fluid">
+                <div class="span5">
+                    <div id="resource-monitor-mini-battery" class="mini-plot"></div>
+                </div>
+                <div class="span7">
+                    {{ _("Battery") }}<br/>
+                    <span class="tiny-text">
+                        <!-- ko with: battery() -->
+                            <span data-bind="text: percent.toFixed(1)"></span> {{ _('&#37') }}
+                        <!-- /ko -->
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endif %}

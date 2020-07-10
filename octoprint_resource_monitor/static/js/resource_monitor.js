@@ -11,6 +11,7 @@ $(function() {
         self.network = ko.observableArray();
         self.downloadSpeeds = ko.observableArray();
         self.uploadSpeeds = ko.observableArray();
+        self.battery = ko.observable();
 
         self.currentPlotIndex = 60;
 
@@ -24,6 +25,8 @@ $(function() {
         self.partitionPlots = [];
         self.miniNetworkPlots = [];
         self.networkPlots = [];
+        self.miniBatteryPlot = null;
+        self.batteryPlot = null;
 
         self.averageCpuPlotData = null;
         self.cpuCorePlotData = [];
@@ -33,6 +36,7 @@ $(function() {
         self.networkPlotData = [];
         self.lastSentBytes = [];
         self.lastReceivedBytes = [];
+        self.batteryPlotData = null;
 
         self.baseOptions =  {
             yaxis: {
@@ -148,6 +152,28 @@ $(function() {
                 self.memoryPlot.setData(self.memoryPlotData);
                 self.memoryPlot.setupGrid();
                 self.memoryPlot.draw();
+            }
+        });
+
+        self.battery.subscribe(function(newValue) {
+            if(self.batteryPlotData === null) {
+                var batteryData = [];
+                for(var i = 0; i < self.currentPlotIndex; i++) {
+                    batteryData.push([i, 0]);
+                }
+                self.batteryPlotData = [batteryData];
+            }
+            self.batteryPlotData[0].push([self.currentPlotIndex, newValue.percent]);
+            self.batteryPlotData[0].shift();
+            if(self.miniBatteryPlot != null) {
+                self.miniBatteryPlot.setData(self.batteryPlotData);
+                self.miniBatteryPlot.setupGrid();
+                self.miniBatteryPlot.draw();
+            }
+            if(self.batteryPlot != null) {
+                self.batteryPlot.setData(self.batteryPlotData);
+                self.batteryPlot.setupGrid();
+                self.batteryPlot.draw();
             }
         });
 
@@ -278,6 +304,13 @@ $(function() {
                     self.memoryPlot.getAxes().xaxis.options.show = true;
                     self.memoryPlot.getAxes().yaxis.options.show = true;
                 }
+            } else if (tabId === "#resource_monitor_battery_tab") {
+                if(self.batteryPlot === null) {
+                    self.batteryPlot = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
+                    self.batteryPlot.getAxes().xaxis.options.show = true;
+                    self.batteryPlot.getAxes().yaxis.options.show = true;
+                    self.batteryPlot.getAxes().yaxis.options.max = 100;
+                }
             } else if (tabId.includes("#resource_monitor_disk_")) {
                 var index = parseInt($(e.target).attr("data-index"));
                 if(self.partitionPlots[index] === undefined) {
@@ -307,6 +340,10 @@ $(function() {
                 }
                 if(self.miniMemoryPlot === null) {
                     self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
+                }
+                if(self.miniBatteryPlot === null) {
+                    self.miniBatteryPlot = $.plot($("#resource-monitor-mini-battery"), [[]], self.baseOptions);
+                    self.miniBatteryPlot.getAxes().yaxis.options.max = 100;
                 }
                 if(self.miniPartitionPlots.length === 0) {
                     $("div.resource-monitor-mini-partition-plot").each(function() {
@@ -338,6 +375,7 @@ $(function() {
                 self.partitions(message.partitions);
                 self.network(message.network);
                 self.temp(message.temp);
+                self.battery(message.battery);
 
                 self.currentPlotIndex++;
             }

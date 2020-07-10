@@ -37,7 +37,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			temp=self.get_cpu_temp(),
 			memory=psutil.virtual_memory()._asdict(),
 			partitions=self.get_partitions(all=False),
-			network=self.get_network(all=False)
+			network=self.get_network(all=False),
+			battery=self.get_battery()
 		)
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
@@ -72,7 +73,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			network=self.get_network(all=False),
 			all_network=self.get_network(all=True),
 			cpu=self.get_cpu(),
-			temp=self.get_cpu_temp()
+			temp=self.get_cpu_temp(),
+			battery=self.get_battery()
 		)
 
 	def get_partitions(self, all):
@@ -108,6 +110,12 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			if "cpu-thermal" in temps:
 				return temps["cpu-thermal"][0]._asdict()
 		return dict()
+
+	def get_battery(self):
+		bat = psutil.sensors_battery()
+		if bat:
+			return bat._asdict()
+		return None
 
 	def get_update_information(self):
 		return dict(
