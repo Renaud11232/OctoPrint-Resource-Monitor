@@ -109,6 +109,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				return temps["coretemp"][0]._asdict()
 			if "cpu-thermal" in temps:
 				return temps["cpu-thermal"][0]._asdict()
+			if "cpu_thermal" in temps:
+				return temps["cpu_thermal"][0]._asdict()
 		return dict()
 
 	def get_battery(self):
