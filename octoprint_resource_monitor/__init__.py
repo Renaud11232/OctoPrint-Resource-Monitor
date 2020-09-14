@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import psutil
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
+from .temperature import *
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
@@ -18,6 +19,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			),
 			disk=dict(
 				exceptions=[]
+			),
+			temperature=dict(
+				unit="celsius"
 			)
 		)
 
@@ -101,16 +105,22 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def get_cpu_temp(self):
 		if hasattr(psutil, "sensors_temperatures"):
-			temps = psutil.sensors_temperatures()
+			temps_celsius = psutil.sensors_temperatures()
 		else:
+			temps_celsius = None
+		if temps_celsius:
 			temps = None
-		if temps:
-			if "coretemp" in temps:
-				return temps["coretemp"][0]._asdict()
-			if "cpu-thermal" in temps:
-				return temps["cpu-thermal"][0]._asdict()
-			if "cpu_thermal" in temps:
-				return temps["cpu_thermal"][0]._asdict()
+			if "coretemp" in temps_celsius:
+				temps = temps_celsius["coretemp"][0]._asdict()
+			if "cpu-thermal" in temps_celsius:
+				temps = temps_celsius["cpu-thermal"][0]._asdict()
+			if "cpu_thermal" in temps_celsius:
+				temps = temps_celsius["cpu_thermal"][0]._asdict()
+			if temps:
+				return dict(
+					celsius=temps,
+					fahrenheit=to_fahrenheit(temps)
+				)
 		return dict()
 
 	def get_battery(self):

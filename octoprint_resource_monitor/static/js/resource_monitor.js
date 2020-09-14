@@ -30,7 +30,8 @@ $(function() {
 
         self.averageCpuPlotData = null;
         self.cpuCorePlotData = [];
-        self.tempPlotData = null;
+        self.celsiusPlotData = null;
+        self.fahrenheitPlotData = null;
         self.memoryPlotData = null;
         self.partitionPlotData = [];
         self.networkPlotData = [];
@@ -42,14 +43,14 @@ $(function() {
             yaxis: {
                 min: 0,
                 show: false,
-                tickFormatter: function(value, axis) {
+                tickFormatter: function() {
                     return "";
                 },
                 ticks: 10
             },
             xaxis: {
                 show: false,
-                tickFormatter: function(value, axis) {
+                tickFormatter: function() {
                     return "";
                 },
                 tickSize: 10
@@ -82,7 +83,7 @@ $(function() {
                 self.averageCpuPlotData = [averageData];
             }
             if(self.cpuCorePlotData.length === 0) {
-                newValue.cores.forEach(function(core, coreIndex) {
+                newValue.cores.forEach(function() {
                     var coreData = [];
                     for(var i = 0; i < self.currentPlotIndex; i++) {
                         coreData.push([i, 0]);
@@ -109,22 +110,44 @@ $(function() {
         });
 
         self.temp.subscribe(function(newValue) {
-            if(self.tempPlotData === null) {
-                var tempData = [];
+            if(self.celsiusPlotData === null) {
+                var tempCelsiusData = [];
+                var tempsFahrenheitData = [];
                 for(var i = 0; i < self.currentPlotIndex; i++) {
-                    tempData.push([i, 0]);
+                    tempCelsiusData.push([i, 0]);
+                    tempsFahrenheitData.push([i, 32]);
                 }
-                self.tempPlotData = [tempData];
+                self.celsiusPlotData = [tempCelsiusData];
+                self.fahrenheitPlotData = [tempsFahrenheitData];
             }
-            self.tempPlotData[0].push([self.currentPlotIndex, newValue.current]);
-            self.tempPlotData[0].shift();
+            self.celsiusPlotData[0].push([self.currentPlotIndex, newValue.celsius.current]);
+            self.fahrenheitPlotData[0].push([self.currentPlotIndex, newValue.fahrenheit.current]);
+            self.celsiusPlotData[0].shift();
+            self.fahrenheitPlotData[0].shift();
+            var unit = self.settingsViewModel.settings.plugins.resource_monitor.temperature.unit();
             if(self.miniTempPlot != null) {
-                self.miniTempPlot.setData(self.tempPlotData);
+                if(unit === "celsius") {
+                    self.miniTempPlot.setData(self.celsiusPlotData);
+                    self.miniTempPlot.getAxes().yaxis.options.max = 100;
+                    self.miniTempPlot.getAxes().yaxis.options.min = 0;
+                } else if (unit === "fahrenheit") {
+                    self.miniTempPlot.setData(self.fahrenheitPlotData);
+                    self.miniTempPlot.getAxes().yaxis.options.max = 212;
+                    self.miniTempPlot.getAxes().yaxis.options.min = 32;
+                }
                 self.miniTempPlot.setupGrid();
                 self.miniTempPlot.draw();
             }
             if(self.tempPlot != null) {
-                self.tempPlot.setData(self.tempPlotData);
+                if(unit === "celsius") {
+                    self.tempPlot.setData(self.celsiusPlotData);
+                    self.tempPlot.getAxes().yaxis.options.max = 100;
+                    self.tempPlot.getAxes().yaxis.options.min = 0;
+                } else if (unit === "fahrenheit") {
+                    self.tempPlot.setData(self.fahrenheitPlotData);
+                    self.tempPlot.getAxes().yaxis.options.max = 212;
+                    self.tempPlot.getAxes().yaxis.options.min = 32;
+                }
                 self.tempPlot.setupGrid();
                 self.tempPlot.draw();
             }
@@ -208,7 +231,7 @@ $(function() {
 
         self.network.subscribe(function(newValue) {
             if(self.networkPlotData.length === 0) {
-                newValue.forEach(function(network, networkIndex) {
+                newValue.forEach(function() {
                     var downloadData = [];
                     var uploadData = [];
                     for(var i = 0; i < self.currentPlotIndex; i++) {
@@ -219,7 +242,7 @@ $(function() {
                 });
             }
             if(self.lastSentBytes.length === 0 || self.lastReceivedBytes.length === 0) {
-                newValue.forEach(function(network) {
+                newValue.forEach(function() {
                     self.lastSentBytes.push(0);
                     self.lastReceivedBytes.push(0);
                 });
@@ -227,7 +250,7 @@ $(function() {
             var downloadSpeeds = [];
             var uploadSpeeds = [];
             self.networkPlotData.forEach(function(networkData, networkIndex) {
-                if(self.lastReceivedBytes[networkIndex] != 0 && self.lastSentBytes[networkIndex] != 0 ) {
+                if(self.lastReceivedBytes[networkIndex] !== 0 && self.lastSentBytes[networkIndex] !== 0 ) {
                     var download = newValue[networkIndex].bytes_recv - self.lastReceivedBytes[networkIndex];
                     var upload = newValue[networkIndex].bytes_sent - self.lastSentBytes[networkIndex];
                     networkData[0].push([self.currentPlotIndex, download]);
@@ -291,12 +314,12 @@ $(function() {
 
         $('#tab_plugin_resource_monitor a[data-toggle="tab"]').on("shown", function(e) {
             var tabId = $(e.target).attr("href");
+            var index;
             if (tabId === "#resource_monitor_temp_tab") {
                 if(self.tempPlot === null) {
                     self.tempPlot = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
                     self.tempPlot.getAxes().xaxis.options.show = true;
                     self.tempPlot.getAxes().yaxis.options.show = true;
-                    self.tempPlot.getAxes().yaxis.options.max = 100;
                 }
             } else if (tabId === "#resource_monitor_memory_tab") {
                 if(self.memoryPlot === null) {
@@ -312,14 +335,14 @@ $(function() {
                     self.batteryPlot.getAxes().yaxis.options.max = 100;
                 }
             } else if (tabId.includes("#resource_monitor_disk_")) {
-                var index = parseInt($(e.target).attr("data-index"));
+                index = parseInt($(e.target).attr("data-index"));
                 if(self.partitionPlots[index] === undefined) {
                     self.partitionPlots[index] = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
                     self.partitionPlots[index].getAxes().xaxis.options.show = true;
                     self.partitionPlots[index].getAxes().yaxis.options.show = true;
                 }
             } else if (tabId.includes("#resource_monitor_network_")) {
-                var index = parseInt($(e.target).attr("data-index"));
+                index = parseInt($(e.target).attr("data-index"));
                 if(self.networkPlots[index] === undefined) {
                     self.networkPlots[index] = $.plot($(tabId + " .detail-plot"), [[]], self.baseOptions);
                     self.networkPlots[index].getAxes().xaxis.options.show = true;
@@ -328,7 +351,7 @@ $(function() {
             }
         });
 
-        self.onAfterTabChange = function(current, previous) {
+        self.onAfterTabChange = function(current) {
             if(current === "#tab_plugin_resource_monitor") {
                 if(self.miniCpuPlot === null) {
                     self.miniCpuPlot = $.plot($("#resource-monitor-mini-cpu"), [[]], self.baseOptions);
@@ -336,7 +359,6 @@ $(function() {
                 }
                 if(self.miniTempPlot === null) {
                     self.miniTempPlot = $.plot($("#resource-monitor-mini-temp"), [[]], self.baseOptions);
-                    self.miniTempPlot.getAxes().yaxis.options.max = 100;
                 }
                 if(self.miniMemoryPlot === null) {
                     self.miniMemoryPlot = $.plot($("#resource-monitor-mini-memory"), [[]], self.baseOptions);
@@ -369,7 +391,7 @@ $(function() {
         };
 
         self.onDataUpdaterPluginMessage = function(plugin, message) {
-            if(plugin == "resource_monitor") {
+            if(plugin === "resource_monitor") {
                 self.cpu(message.cpu);
                 self.memory(message.memory);
                 self.partitions(message.partitions);

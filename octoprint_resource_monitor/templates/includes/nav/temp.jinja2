@@ -9,7 +9,13 @@
                     {{ _("Temperature") }}<br/>
                     <span class="tiny-text">
                         <!-- ko with: temp() -->
-                            <span data-bind="text: current.toFixed(1)"></span> {{ _('°C') }}
+                                <span data-bind="text: celsius.current.toFixed(1),
+                                                 visible: $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'celsius'"></span>
+                                <span data-bind="visible:  $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'celsius'">{{ _("°C") }}</span>
+
+                                <span data-bind="text: fahrenheit.current.toFixed(1),
+                                                 visible: $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'fahrenheit'"></span>
+                                <span data-bind="visible:  $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'fahrenheit'">{{ _("°F") }}</span>
                         <!-- /ko -->
                     </span>
                 </div>

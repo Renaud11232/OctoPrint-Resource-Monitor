@@ -5,6 +5,15 @@
 <div>
     <form class="form-horizontal">
         <div class="control-group">
+            <label class="control-label" for="resource_monitor_temperature_unit">{{ _('Temperature unit') }}</label>
+            <div class="controls">
+                <select id="resource_monitor_temperature_unit" class="span6" data-bind="value: settingsViewModel.settings.plugins.resource_monitor.temperature.unit">
+                    <option value="celsius">{{ _('Celsius (°C)') }}</option>
+                    <option value="fahrenheit">{{ _('Fahrenheit (°F)') }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label" for="resource_monitor_network_exceptions">{{ _('Network Exceptions') }}</label>
             <div class="controls">
                 <select id="resource_monitor_network_exceptions" class="span6" multiple="true" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.network.exceptions">
