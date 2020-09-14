@@ -110,7 +110,7 @@ $(function() {
         });
 
         self.temp.subscribe(function(newValue) {
-            if(self.celsiusPlotData === null) {
+            if(self.celsiusPlotData === null || self.fahrenheitPlotData === null) {
                 var tempCelsiusData = [];
                 var tempsFahrenheitData = [];
                 for(var i = 0; i < self.currentPlotIndex; i++) {

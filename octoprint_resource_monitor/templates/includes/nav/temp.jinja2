@@ -1,4 +1,4 @@
-{% if plugin_resource_monitor_temp %}
+{% if plugin_resource_monitor_temp["celsius"] %}
     <li>
         <a href="#resource_monitor_temp_tab" data-toggle="tab">
             <div class="row-fluid">
@@ -9,13 +9,16 @@
                     {{ _("Temperature") }}<br/>
                     <span class="tiny-text">
                         <!-- ko with: temp() -->
-                                <span data-bind="text: celsius.current.toFixed(1),
+                            <!-- ko with: celsius -->
+                                <span data-bind="text: current.toFixed(1),
                                                  visible: $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'celsius'"></span>
                                 <span data-bind="visible:  $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'celsius'">{{ _("°C") }}</span>
-
-                                <span data-bind="text: fahrenheit.current.toFixed(1),
+                            <!-- /ko -->
+                            <!-- ko with: fahrenheit -->
+                                <span data-bind="text: current.toFixed(1),
                                                  visible: $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'fahrenheit'"></span>
                                 <span data-bind="visible:  $root.settingsViewModel.settings.plugins.resource_monitor.temperature.unit() === 'fahrenheit'">{{ _("°F") }}</span>
+                            <!-- /ko -->
                         <!-- /ko -->
                     </span>
                 </div>

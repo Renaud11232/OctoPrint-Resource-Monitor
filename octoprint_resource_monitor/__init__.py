@@ -121,7 +121,10 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 					celsius=temps,
 					fahrenheit=to_fahrenheit(temps)
 				)
-		return dict()
+		return dict(
+			celsius=dict(),
+			fahrenheit=dict()
+		)
 
 	def get_battery(self):
 		bat = psutil.sensors_battery()
