@@ -61,10 +61,11 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
 	def get_cpu(self):
+		cpu_freq = psutil.cpu_freq()
 		return dict(
 			cores=psutil.cpu_percent(percpu=True),
 			average=psutil.cpu_percent(),
-			frequency=psutil.cpu_freq()._asdict(),
+			frequency=cpu_freq._asdict() if cpu_freq else dict(),
 			core_count=psutil.cpu_count(logical=False),
 			thread_count=psutil.cpu_count(logical=True),
 			pids=len(psutil.pids())

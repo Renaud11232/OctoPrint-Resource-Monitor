@@ -33,10 +33,12 @@
                 <span class="tiny-text">{{ _("Processes") }}</span><br/>
                 <span data-bind="text: pids"></span>
             </div>
-            <div class="span4">
-                <span class="tiny-text">{{ _("Speed") }}</span><br/>
-                <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> {{ _("GHz") }}
-            </div>
+            <!-- ko if: frequency.current -->
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Speed") }}</span><br/>
+                    <span data-bind="text: (frequency.current/1000).toFixed(2)"></span> {{ _("GHz") }}
+                </div>
+            <!-- /ko -->
         </div>
         <div class="row-fluid">
             <div class="span4">
