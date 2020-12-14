@@ -100,7 +100,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 					addrs=[addr._asdict() for addr in addrs[nic_name]]
 				)
 				nic.update(io_counters[nic_name]._asdict())
-				nic.update(stats[nic_name]._asdict())
+				if nic_name in stats:
+					nic.update(stats[nic_name]._asdict())
 				final.append(nic)
 		return final
 

@@ -12,18 +12,20 @@
         </div>
         <!-- ko with: network()[{{ loop.index - 1 }}]-->
             <div class="row-fluid resource-details">
-                    <div class="span4">
-                        <span class="tiny-text">{{ _("Down") }}</span><br/>
-                        <span data-bind="text: filesize($root.downloadSpeeds()[{{ loop.index - 1 }}], {bits: true})"></span>/s
-                    </div>
-                    <div class="span4">
-                        <span class="tiny-text">{{ _("Up") }}</span><br/>
-                        <span data-bind="text: filesize($root.uploadSpeeds()[{{ loop.index - 1 }}], {bits: true})"></span>/s
-                    </div>
                 <div class="span4">
-                    <span class="tiny-text">{{ _("Link Speed") }}</span><br/>
-                    <span data-bind="text: speed >= 1000 ? speed / 1000 : speed"></span> <span data-bind="text: speed >= 1000 ? '{{ _('Gb') }}' : '{{ _('Mb') }}'"></span>/s
+                    <span class="tiny-text">{{ _("Down") }}</span><br/>
+                    <span data-bind="text: filesize($root.downloadSpeeds()[{{ loop.index - 1 }}], {bits: true})"></span>/s
                 </div>
+                <div class="span4">
+                    <span class="tiny-text">{{ _("Up") }}</span><br/>
+                    <span data-bind="text: filesize($root.uploadSpeeds()[{{ loop.index - 1 }}], {bits: true})"></span>/s
+                </div>
+                <!-- ko with: $data.speed -->
+                    <div class="span4">
+                        <span class="tiny-text">{{ _("Link Speed") }}</span><br/>
+                        <span data-bind="text: $data >= 1000 ? $data / 1000 : $data"></span> <span data-bind="text: $data >= 1000 ? '{{ _('Gb') }}' : '{{ _('Mb') }}'"></span>/s
+                    </div>
+                <!-- /ko -->
             </div>
             <div class="row-fluid">
                 <!-- ko with: addrs.find(function(address){return address.family === 2;}) -->
