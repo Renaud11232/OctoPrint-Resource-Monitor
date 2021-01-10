@@ -301,6 +301,22 @@ $(function() {
             });
         });
 
+        self.twoDigits = function(value) {
+            return (value > 9 ? "" : "0") + value;
+        }
+
+        self.formatSeconds = function(uptime) {
+            var seconds = uptime % 60;
+            var minutes = Math.floor(uptime / 60) % 60;
+            var hours = Math.floor(uptime / 3600) % 24;
+            var days = Math.floor(uptime / (3600 * 24));
+            var formatted = self.twoDigits(hours) + ":" + self.twoDigits(minutes) + ":" + self.twoDigits(seconds);
+            if(days > 0) {
+                formatted = days + ":" + formatted;
+            }
+            return formatted;
+        };
+
         //Hacky way of supporting Themeify
         new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {

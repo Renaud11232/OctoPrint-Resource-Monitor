@@ -56,5 +56,11 @@
                 </div>
             <!-- /ko -->
         </div>
+        <div class="row-fluid">
+            <div class="span4">
+                <span class="tiny-text">{{ _("Uptime") }}</span><br/>
+                <span data-bind="text: $root.formatSeconds(uptime)"></span>
+            </div>
+        </div>
     <!-- /ko -->
 </div>

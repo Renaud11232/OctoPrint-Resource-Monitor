@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import psutil
+import time
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
 from .temperature import *
@@ -68,7 +69,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			frequency=cpu_freq._asdict() if cpu_freq else dict(),
 			core_count=psutil.cpu_count(logical=False),
 			thread_count=psutil.cpu_count(logical=True),
-			pids=len(psutil.pids())
+			pids=len(psutil.pids()),
+			uptime=self.get_uptime()
 		)
 
 	def get_template_vars(self):
@@ -81,6 +83,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			temp=self.get_cpu_temp(),
 			battery=self.get_battery()
 		)
+
+	def get_uptime(self):
+		return int(time.time() - psutil.boot_time())
 
 	def get_partitions(self, all):
 		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
