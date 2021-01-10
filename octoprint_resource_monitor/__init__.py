@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import psutil
+import os
 import time
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
@@ -48,6 +49,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
 	def on_after_startup(self):
+		self.__process = psutil.Process()
 		RepeatedTimer(self.interval, self.check_resources).start()
 
 	def get_assets(self):
@@ -70,7 +72,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			core_count=psutil.cpu_count(logical=False),
 			thread_count=psutil.cpu_count(logical=True),
 			pids=len(psutil.pids()),
-			uptime=self.get_uptime()
+			uptime=self.get_uptime(),
+			octoprint=self.get_octoprint_usage()
 		)
 
 	def get_template_vars(self):
@@ -86,6 +89,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def get_uptime(self):
 		return int(time.time() - psutil.boot_time())
+
+	def get_octoprint_usage(self):
+		return self.__process.cpu_percent() / psutil.cpu_count()
 
 	def get_partitions(self, all):
 		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)

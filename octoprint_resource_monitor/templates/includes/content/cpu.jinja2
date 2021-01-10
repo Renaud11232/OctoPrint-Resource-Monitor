@@ -30,8 +30,8 @@
                 <span data-bind="text: Math.round(average)"></span>%
             </div>
             <div class="span4">
-                <span class="tiny-text">{{ _("Processes") }}</span><br/>
-                <span data-bind="text: pids"></span>
+                <span class="tiny-text">{{ _("OctoPrint") }}</span><br/>
+                <span data-bind="text: octoprint.toFixed(1)"></span>%
             </div>
             <!-- ko if: frequency.current -->
                 <div class="span4">
@@ -60,6 +60,10 @@
             <div class="span4">
                 <span class="tiny-text">{{ _("Uptime") }}</span><br/>
                 <span data-bind="text: $root.formatSeconds(uptime)"></span>
+            </div>
+            <div class="span4">
+                <span class="tiny-text">{{ _("Processes") }}</span><br/>
+                <span data-bind="text: pids"></span>
             </div>
         </div>
     <!-- /ko -->
