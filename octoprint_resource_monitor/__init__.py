@@ -83,7 +83,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		)
 
 	def get_partitions(self, all):
-		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)]
+		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
+			     and partition.fstype not in ["squashfs"]]
 		for partition in partitions:
 			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
 		return partitions
