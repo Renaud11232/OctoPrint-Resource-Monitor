@@ -4,6 +4,7 @@ from __future__ import absolute_import
 import psutil
 import os
 import time
+import flask
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
 from .temperature import *
@@ -12,7 +13,8 @@ from .temperature import *
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 							octoprint.plugin.StartupPlugin,
 							octoprint.plugin.AssetPlugin,
-							octoprint.plugin.TemplatePlugin):
+							octoprint.plugin.TemplatePlugin,
+							octoprint.plugin.BlueprintPlugin):
 
 	def get_settings_defaults(self):
 		return dict(
@@ -38,7 +40,11 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return 1
 
 	def check_resources(self):
-		message = dict(
+		message = self.get_resources()
+		self._plugin_manager.send_plugin_message(self._identifier, message)
+
+	def get_resources(self):
+		return dict(
 			cpu=self.get_cpu(),
 			temp=self.get_cpu_temp(),
 			memory=psutil.virtual_memory()._asdict(),
@@ -46,7 +52,6 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			network=self.get_network(all=False),
 			battery=self.get_battery()
 		)
-		self._plugin_manager.send_plugin_message(self._identifier, message)
 
 	def on_after_startup(self):
 		self.__process = psutil.Process()
@@ -145,6 +150,10 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		if bat:
 			return bat._asdict()
 		return dict()
+
+	@octoprint.plugin.BlueprintPlugin.route("/stats", methods=["GET"])
+	def api(self):
+		return flask.make_response(flask.jsonify(self.get_resources()), 200)
 
 	def get_update_information(self):
 		return dict(
