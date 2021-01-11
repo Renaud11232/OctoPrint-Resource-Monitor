@@ -1,13 +1,10 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-import psutil
-import os
-import time
 import flask
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
-from .temperature import *
+from .monitor import Monitor
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
@@ -33,28 +30,16 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return 1
 
 	def on_settings_initialized(self):
-		self.__network_exceptions = self._settings.get(["network", "exceptions"])
-		self.__disk_exceptions = self._settings.get(["disk", "exceptions"])
+		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]), self._settings.get(["disk", "exceptions"]))
 
 	def interval(self):
 		return 1
 
 	def check_resources(self):
-		message = self.get_resources()
+		message = self.__monitor.get_all_resources()
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
-	def get_resources(self):
-		return dict(
-			cpu=self.get_cpu(),
-			temp=self.get_cpu_temp(),
-			memory=psutil.virtual_memory()._asdict(),
-			partitions=self.get_partitions(all=False),
-			network=self.get_network(all=False),
-			battery=self.get_battery()
-		)
-
 	def on_after_startup(self):
-		self.__process = psutil.Process()
 		RepeatedTimer(self.interval, self.check_resources).start()
 
 	def get_assets(self):
@@ -68,92 +53,20 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			]
 		)
 
-	def get_cpu(self):
-		cpu_freq = psutil.cpu_freq()
-		return dict(
-			cores=psutil.cpu_percent(percpu=True),
-			average=psutil.cpu_percent(),
-			frequency=cpu_freq._asdict() if cpu_freq else dict(),
-			core_count=psutil.cpu_count(logical=False),
-			thread_count=psutil.cpu_count(logical=True),
-			pids=len(psutil.pids()),
-			uptime=self.get_uptime(),
-			octoprint=self.get_octoprint_usage()
-		)
-
 	def get_template_vars(self):
 		return dict(
-			partitions=self.get_partitions(all=False),
-			all_partitions=self.get_partitions(all=True),
-			network=self.get_network(all=False),
-			all_network=self.get_network(all=True),
-			cpu=self.get_cpu(),
-			temp=self.get_cpu_temp(),
-			battery=self.get_battery()
+			partitions=self.__monitor.get_partitions(all=False),
+			all_partitions=self.__monitor.get_partitions(all=True),
+			network=self.__monitor.get_network(all=False),
+			all_network=self.__monitor.get_network(all=True),
+			cpu=self.__monitor.get_cpu(),
+			temp=self.__monitor.get_cpu_temp(),
+			battery=self.__monitor.get_battery()
 		)
-
-	def get_uptime(self):
-		return int(time.time() - psutil.boot_time())
-
-	def get_octoprint_usage(self):
-		return self.__process.cpu_percent() / psutil.cpu_count()
-
-	def get_partitions(self, all):
-		partitions = [partition._asdict() for partition in psutil.disk_partitions() if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
-			     and partition.fstype not in ["squashfs"]]
-		for partition in partitions:
-			partition.update(psutil.disk_usage(partition["mountpoint"])._asdict())
-		return partitions
-
-	def get_network(self, all):
-		io_counters = psutil.net_io_counters(pernic=True)
-		addrs = psutil.net_if_addrs()
-		stats = psutil.net_if_stats()
-		final = []
-		for nic_name in io_counters:
-			if all or nic_name not in self.__network_exceptions:
-				nic = dict(
-					name=nic_name,
-					addrs=[addr._asdict() for addr in addrs[nic_name]]
-				)
-				nic.update(io_counters[nic_name]._asdict())
-				if nic_name in stats:
-					nic.update(stats[nic_name]._asdict())
-				final.append(nic)
-		return final
-
-	def get_cpu_temp(self):
-		if hasattr(psutil, "sensors_temperatures"):
-			temps_celsius = psutil.sensors_temperatures()
-		else:
-			temps_celsius = None
-		if temps_celsius:
-			temps = None
-			if "coretemp" in temps_celsius:
-				temps = temps_celsius["coretemp"][0]._asdict()
-			if "cpu-thermal" in temps_celsius:
-				temps = temps_celsius["cpu-thermal"][0]._asdict()
-			if "cpu_thermal" in temps_celsius:
-				temps = temps_celsius["cpu_thermal"][0]._asdict()
-			if temps:
-				return dict(
-					celsius=temps,
-					fahrenheit=to_fahrenheit(temps)
-				)
-		return dict(
-			celsius=dict(),
-			fahrenheit=dict()
-		)
-
-	def get_battery(self):
-		bat = psutil.sensors_battery()
-		if bat:
-			return bat._asdict()
-		return dict()
 
 	@octoprint.plugin.BlueprintPlugin.route("/stats", methods=["GET"])
 	def api(self):
-		return flask.make_response(flask.jsonify(self.get_resources()), 200)
+		return flask.make_response(flask.jsonify(self.__monitor.get_all_resources()), 200)
 
 	def get_update_information(self):
 		return dict(
@@ -173,6 +86,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 __plugin_name__ = "Resource Monitor"
 __plugin_pythoncompat__ = ">=2.7,<4"
+
 
 def __plugin_load__():
 	global __plugin_implementation__
