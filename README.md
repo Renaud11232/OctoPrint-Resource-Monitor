@@ -24,7 +24,7 @@ All can be configured directly though the *Settings* menu. or via the [config.ya
 
 ```yaml
 plugins:
-  marlin_flasher:
+  resource monitor:
     network:
       exceptions:
         - lo
