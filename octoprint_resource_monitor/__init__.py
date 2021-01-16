@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import flask
 import octoprint.plugin
 from octoprint.util import RepeatedTimer
+import time
+import math
 from .monitor import Monitor
 
 
@@ -33,7 +35,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]), self._settings.get(["disk", "exceptions"]))
 
 	def interval(self):
-		return 1
+		timestamp = time.time()
+		return math.ceil(timestamp) - timestamp
 
 	def check_resources(self):
 		message = self.__monitor.get_all_resources()
