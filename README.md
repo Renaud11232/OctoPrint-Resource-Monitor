@@ -24,7 +24,7 @@ All can be configured directly though the *Settings* menu. or via the [config.ya
 
 ```yaml
 plugins:
-  resource monitor:
+  resource_monitor:
     network:
       exceptions:
         - lo
