@@ -6,6 +6,9 @@ class Monitor:
 
 	def __init__(self, network_exceptions, disk_exceptions):
 		self.__process = psutil.Process()
+		# First call so it does not return 0 on next call
+		self.__process.cpu_percent()
+		self.__init_children()
 		self.__network_exceptions = network_exceptions
 		self.__disk_exceptions = disk_exceptions
 
@@ -31,8 +34,27 @@ class Monitor:
 			thread_count=psutil.cpu_count(logical=True),
 			pids=len(psutil.pids()),
 			uptime=int(time.time() - psutil.boot_time()),
-			octoprint=self.__process.cpu_percent() / psutil.cpu_count()
+			octoprint=self.__get_octoprint_cpu()
 		)
+
+	def __init_children(self):
+		self.__children = self.__process.children(recursive=True)
+		for child in self.__children:
+			# First call so it does not return 0 on next call, process might be die between calls
+			try:
+				child.cpu_percent()
+			except psutil.NoSuchProcess:
+				pass
+
+	def __get_octoprint_cpu(self):
+		total_cpu = self.__process.cpu_percent()
+		for child in self.__children:
+			try:
+				total_cpu += child.cpu_percent()
+			except psutil.NoSuchProcess:
+				pass
+		self.__init_children()
+		return total_cpu / psutil.cpu_count()
 
 	def get_cpu_temp(self):
 		temps_celsius = None
