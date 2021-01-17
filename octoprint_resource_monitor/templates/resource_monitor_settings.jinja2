@@ -1,7 +1,4 @@
 <h3>{{ _('Resource Monitor Settings') }}</h3>
-<div class="alert alert-info">
-    {{ _("You will have to restart OctoPrint for these settings to take effect.") }}
-</div>
 <div>
     <form class="form-horizontal">
         <div class="control-group">
@@ -12,6 +9,28 @@
                     <option value="fahrenheit">{{ _('Fahrenheit (°F)') }}</option>
                 </select>
             </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="resource_monitor_interval">{{ _('Graph Refresh Interval') }}</label>
+            <div class="controls">
+                <div class="input-prepend input-append">
+                    <span class="add-on">{{ _('Once every') }}</span>
+                    <input class="input-mini" id="resource_monitor_interval" type="number" min="1" data-bind="value: settingsViewModel.settings.plugins.resource_monitor.interval">
+                    <span class="add-on">{{ _('seconds') }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="resource_monitor_duration">{{ _('Graph Duration') }}</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input class="input-mini" id="resource_monitor_duration" type="number" min="1" data-bind="value: settingsViewModel.settings.plugins.resource_monitor.duration">
+                    <span class="add-on">{{ _('seconds') }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-info">
+            {{ _("You will have to restart OctoPrint for these settings to take effect.") }}
         </div>
         <div class="control-group">
             <label class="control-label" for="resource_monitor_network_exceptions">{{ _('Network Exceptions') }}</label>

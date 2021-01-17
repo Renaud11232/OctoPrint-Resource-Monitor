@@ -25,7 +25,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			),
 			temperature=dict(
 				unit="celsius"
-			)
+			),
+			interval=1,
+			duration=60
 		)
 
 	def get_settings_version(self):

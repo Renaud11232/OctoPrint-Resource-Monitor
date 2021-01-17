@@ -4,6 +4,12 @@ $(function() {
 
         self.settingsViewModel = parameters[0];
 
+        self.frameCount = function() {
+            var interval = self.settingsViewModel.settings.plugins.resource_monitor.interval();
+            var duration = self.settingsViewModel.settings.plugins.resource_monitor.duration();
+            return Math.ceil(duration / interval);
+        };
+
         self.cpu = ko.observable();
         self.temp = ko.observable();
         self.memory = ko.observable();
@@ -241,6 +247,23 @@ $(function() {
                 self.partitions(message.partitions);
                 self.network(message.network);
                 self.battery(message.battery);
+            }
+        };
+
+        self.onSettingsBeforeSave = function() {
+            self.settingsViewModel.settings.plugins.resource_monitor.interval(parseInt(self.settingsViewModel.settings.plugins.resource_monitor.interval()));
+            self.settingsViewModel.settings.plugins.resource_monitor.duration(parseInt(self.settingsViewModel.settings.plugins.resource_monitor.duration()));
+            var changed = false;
+            if(self.memoryData.getFrameCount() !== self.frameCount()) {
+                self.memoryData.setFrameCount(self.frameCount());
+                changed = true;
+            }
+            if(self.memoryData.getFrameLength() !== self.settingsViewModel.settings.plugins.resource_monitor.interval()) {
+                self.memoryData.setFrameLength(self.settingsViewModel.settings.plugins.resource_monitor.interval());
+                changed = true;
+            }
+            if(changed) {
+                self.memoryData.initData([0])
             }
         };
     }

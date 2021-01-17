@@ -89,16 +89,35 @@ function PlotData(frameLength, frameCount, defaultValues) {
     }
 }
 
+PlotData.prototype.setFrameLength = function(frameLength) {
+    this.frameLength = frameLength;
+}
+
+PlotData.prototype.setFrameCount = function(frameCount) {
+    this.frameCount = frameCount;
+}
+
+PlotData.prototype.getFrameLength = function() {
+    return this.frameLength;
+}
+
+PlotData.prototype.getFrameCount = function() {
+    return this.frameCount;
+}
+
 PlotData.prototype.initData = function(defaultValues) {
     this.plotData = [];
     var self = this;
+    this.frameData = [];
     defaultValues.forEach(function(defaultValue) {
         var tempData = [];
-        for(self.currentIndex = 0; self.currentIndex < self.frameLength * self.frameCount; self.currentIndex++) {
+        for(self.currentIndex = 0; self.currentIndex < self.frameCount; self.currentIndex++) {
             tempData.push([self.currentIndex, defaultValue]);
         }
         self.plotData.push(tempData);
+        self.frameData.push([]);
     });
+
 }
 
 PlotData.prototype.getMaxValues = function() {
@@ -114,10 +133,19 @@ PlotData.prototype.getMaxValues = function() {
 PlotData.prototype.pushData = function(values) {
     var self = this;
     values.forEach(function(value, index) {
-        self.plotData[index].push([self.currentIndex, value]);
-        self.plotData[index].shift();
+        self.frameData[index].push(value);
     });
-    this.currentIndex++;
+    if(self.frameData[0].length === this.frameLength) {
+        self.frameData.forEach(function(frameValues, index) {
+            var avg = frameValues.reduce(function(a, b) {
+                return a + b;
+            }, 0) / self.frameLength;
+            self.plotData[index].push([self.currentIndex, avg]);
+            self.plotData[index].shift();
+            frameValues.length = 0;
+        });
+        this.currentIndex++;
+    }
 }
 
 PlotData.prototype.get = function() {
