@@ -49,6 +49,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return dict(
 			js=[
 				"js/filesize.min.js",
+				"js/resource_plot.js",
 				"js/resource_monitor.js"
 			],
 			css=[

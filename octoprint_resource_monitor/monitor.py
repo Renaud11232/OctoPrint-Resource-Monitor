@@ -57,6 +57,14 @@ class Monitor:
 		return total_cpu / psutil.cpu_count()
 
 	def get_cpu_temp(self):
+		# return dict(
+		# 	celsius=dict(
+		# 		current=20
+		# 	),
+		# 	fahrenheit=dict(
+		# 		current=50
+		# 	)
+		# )
 		temps_celsius = None
 		temps_fahrenheit = None
 		if hasattr(psutil, "sensors_temperatures"):
@@ -97,6 +105,11 @@ class Monitor:
 		return final
 
 	def get_battery(self):
+		# return dict(
+		# 	percent=94,
+		# 	secsleft=16628,
+		# 	power_plugged=True
+		# )
 		bat = psutil.sensors_battery()
 		if bat:
 			return bat._asdict()
