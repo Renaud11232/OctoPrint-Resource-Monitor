@@ -108,8 +108,6 @@ $(function() {
             }
             self.diskData.forEach(function(disk, diskIndex) {
                 disk.pushData([newValue[diskIndex].used]);
-            });
-            self.diskData.forEach(function(disk, diskIndex) {
                 self.setPlotsData([self.miniPartitionPlots[diskIndex], self.partitionPlots[diskIndex]], disk, newValue[diskIndex].total);
             });
         });

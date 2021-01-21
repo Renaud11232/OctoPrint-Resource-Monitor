@@ -151,5 +151,3 @@ PlotData.prototype.pushData = function(values) {
 PlotData.prototype.get = function() {
     return this.plotData;
 }
-
-
