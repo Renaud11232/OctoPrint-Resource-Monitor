@@ -41,6 +41,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return math.ceil(timestamp) - timestamp
 
 	def check_resources(self):
+		if not self._plugin_manager.registered_clients:  # No connected clients to UI
+			return False
 		message = self.__monitor.get_all_resources()
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
