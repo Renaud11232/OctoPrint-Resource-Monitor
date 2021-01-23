@@ -102,8 +102,8 @@ $(function() {
 
         self.partitions.subscribe(function(newValue) {
             if(self.diskData.length === 0) {
-                newValue.forEach(function(partition) {
-                    self.diskData.push(new PlotData(1, 60, [partition.used]));
+                newValue.forEach(function() {
+                    self.diskData.push(new PlotData(1, 60, [0]));
                 });
             }
             self.diskData.forEach(function(disk, diskIndex) {
@@ -248,21 +248,39 @@ $(function() {
             }
         };
 
+        self.setupPlotDataIfNeeded = function(plotDatas, defaultValues) {
+            var changed = false;
+            var newFrameCount = self.frameCount();
+            var newFrameLength = self.settingsViewModel.settings.plugins.resource_monitor.interval();
+            if(newFrameLength > 0) {
+                plotDatas.forEach(function (plotData) {
+                    if (plotData.getFrameCount() !== newFrameCount) {
+                        plotData.setFrameCount(newFrameCount);
+                        changed = true;
+                    }
+                    if (plotData.getFrameLength() !== newFrameLength) {
+                        plotData.setFrameLength(newFrameLength);
+                        changed = true;
+                    }
+                    if (changed) {
+                        plotData.initData(defaultValues);
+                    }
+                });
+            }
+        };
+
         self.onSettingsBeforeSave = function() {
             self.settingsViewModel.settings.plugins.resource_monitor.interval(parseInt(self.settingsViewModel.settings.plugins.resource_monitor.interval()));
             self.settingsViewModel.settings.plugins.resource_monitor.duration(parseInt(self.settingsViewModel.settings.plugins.resource_monitor.duration()));
-            var changed = false;
-            if(self.memoryData.getFrameCount() !== self.frameCount()) {
-                self.memoryData.setFrameCount(self.frameCount());
-                changed = true;
-            }
-            if(self.memoryData.getFrameLength() !== self.settingsViewModel.settings.plugins.resource_monitor.interval()) {
-                self.memoryData.setFrameLength(self.settingsViewModel.settings.plugins.resource_monitor.interval());
-                changed = true;
-            }
-            if(changed) {
-                self.memoryData.initData([0])
-            }
+            self.setupPlotDataIfNeeded([self.averageCpuData], [0]);
+            self.setupPlotDataIfNeeded([self.memoryData], [0]);
+            self.setupPlotDataIfNeeded(self.cpuCoreData, [0]);
+            self.setupPlotDataIfNeeded([self.celsiusTempData], [0]);
+            self.setupPlotDataIfNeeded([self.fahrenheitTempData], [32]);
+            self.setupPlotDataIfNeeded([self.memoryData], [0]);
+            self.setupPlotDataIfNeeded(self.diskData, [0]);
+            self.setupPlotDataIfNeeded(self.networkData, [0, 0]);
+            self.setupPlotDataIfNeeded([self.batteryData], [0]);
         };
     }
 
