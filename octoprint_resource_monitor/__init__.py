@@ -36,6 +36,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return 1
 
 	def check_resources(self):
+		if not self._plugin_manager.registered_clients:  # No connected clients to UI
+			return False
+
 		message = dict(
 			cpu=self.get_cpu(),
 			temp=self.get_cpu_temp(),
