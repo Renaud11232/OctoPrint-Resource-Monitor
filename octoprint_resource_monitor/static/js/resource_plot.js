@@ -15,7 +15,7 @@ function ResourcePlot(selector, miniplot, autoScale, max) {
             tickFormatter: function() {
                 return "";
             },
-            tickSize: 10
+            ticks: 6
         },
         series: {
             lines: {

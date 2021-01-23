@@ -10,6 +10,10 @@ $(function() {
             return Math.ceil(duration / interval);
         };
 
+        self.frameLength = function() {
+            return self.settingsViewModel.settings.plugins.resource_monitor.interval();
+        };
+
         self.cpu = ko.observable();
         self.temp = ko.observable();
         self.memory = ko.observable();
@@ -60,11 +64,11 @@ $(function() {
 
         self.cpu.subscribe(function(newValue) {
             if(!self.averageCpuData) {
-                self.averageCpuData = new PlotData(1, 60, [0]);
+                self.averageCpuData = new PlotData(self.frameLength(), self.frameCount(), [0]);
             }
             if(self.cpuCoreData.length === 0) {
                 newValue.cores.forEach(function() {
-                    self.cpuCoreData.push(new PlotData(1, 60, [0]));
+                    self.cpuCoreData.push(new PlotData(self.frameLength(), self.frameCount(), [0]));
                 });
             }
             self.averageCpuData.pushData([newValue.average]);
@@ -80,8 +84,8 @@ $(function() {
         self.temp.subscribe(function(newValue) {
             var unit = self.settingsViewModel.settings.plugins.resource_monitor.temperature.unit();
             if(!self.celsiusTempData || !self.fahrenheitTempData) {
-                self.celsiusTempData = new PlotData(1, 60, [0]);
-                self.fahrenheitTempData = new PlotData(1, 60, [32]);
+                self.celsiusTempData = new PlotData(self.frameLength(), self.frameCount(), [0]);
+                self.fahrenheitTempData = new PlotData(self.frameLength(), self.frameCount(), [32]);
             }
             self.celsiusTempData.pushData([newValue.celsius.current]);
             self.fahrenheitTempData.pushData([newValue.fahrenheit.current]);
@@ -94,7 +98,7 @@ $(function() {
 
         self.memory.subscribe(function(newValue) {
             if(!self.memoryData) {
-                self.memoryData = new PlotData(1, 60, [0]);
+                self.memoryData = new PlotData(self.frameLength(), self.frameCount(), [0]);
             }
             self.memoryData.pushData([newValue.used]);
             self.setPlotsData([self.miniMemoryPlot, self.memoryPlot], self.memoryData, newValue.total);
@@ -103,7 +107,7 @@ $(function() {
         self.partitions.subscribe(function(newValue) {
             if(self.diskData.length === 0) {
                 newValue.forEach(function() {
-                    self.diskData.push(new PlotData(1, 60, [0]));
+                    self.diskData.push(new PlotData(self.frameLength(), self.frameCount(), [0]));
                 });
             }
             self.diskData.forEach(function(disk, diskIndex) {
@@ -115,7 +119,7 @@ $(function() {
         self.network.subscribe(function(newValue) {
             if(self.networkData.length === 0) {
                 newValue.forEach(function() {
-                    self.networkData.push(new PlotData(1, 60, [0, 0]));
+                    self.networkData.push(new PlotData(self.frameLength(), self.frameCount(), [0, 0]));
                 });
             }
             var uploadSpeeds = [];
@@ -144,7 +148,7 @@ $(function() {
 
         self.battery.subscribe(function(newValue) {
             if(!self.batteryData) {
-                self.batteryData = new PlotData(1, 60, [0]);
+                self.batteryData = new PlotData(self.frameLength(), self.frameCount(), [0]);
             }
             self.batteryData.pushData([newValue.percent]);
             self.setPlotsData([self.miniBatteryPlot, self.batteryPlot], self.batteryData);
@@ -251,7 +255,7 @@ $(function() {
         self.setupPlotDataIfNeeded = function(plotDatas, defaultValues) {
             var changed = false;
             var newFrameCount = self.frameCount();
-            var newFrameLength = self.settingsViewModel.settings.plugins.resource_monitor.interval();
+            var newFrameLength = self.frameLength();
             if(newFrameLength > 0) {
                 plotDatas.forEach(function (plotData) {
                     if (plotData.getFrameCount() !== newFrameCount) {

@@ -11,17 +11,16 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="resource_monitor_interval">{{ _('Graph Refresh Interval') }}</label>
+            <label class="control-label" for="resource_monitor_interval">{{ _('Graph refresh rate') }}</label>
             <div class="controls">
-                <div class="input-prepend input-append">
-                    <span class="add-on">{{ _('Once every') }}</span>
+                <div class="input-append">
                     <input class="input-mini" id="resource_monitor_interval" type="number" min="1" data-bind="value: settingsViewModel.settings.plugins.resource_monitor.interval">
                     <span class="add-on">{{ _('seconds') }}</span>
                 </div>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="resource_monitor_duration">{{ _('Graph Duration') }}</label>
+            <label class="control-label" for="resource_monitor_duration">{{ _('Graph length') }}</label>
             <div class="controls">
                 <div class="input-append">
                     <input class="input-mini" id="resource_monitor_duration" type="number" min="1" data-bind="value: settingsViewModel.settings.plugins.resource_monitor.duration">
