@@ -5,13 +5,13 @@ $(function() {
         self.settingsViewModel = parameters[0];
 
         self.frameCount = function() {
-            var interval = self.settingsViewModel.settings.plugins.resource_monitor.interval();
+            var interval = self.settingsViewModel.settings.plugins.resource_monitor.refresh_rate();
             var duration = self.settingsViewModel.settings.plugins.resource_monitor.duration();
             return Math.ceil(duration / interval);
         };
 
         self.frameLength = function() {
-            return self.settingsViewModel.settings.plugins.resource_monitor.interval();
+            return self.settingsViewModel.settings.plugins.resource_monitor.refresh_rate();
         };
 
         self.cpu = ko.observable();
@@ -274,8 +274,16 @@ $(function() {
         };
 
         self.onSettingsBeforeSave = function() {
-            self.settingsViewModel.settings.plugins.resource_monitor.interval(parseInt(self.settingsViewModel.settings.plugins.resource_monitor.interval()));
-            self.settingsViewModel.settings.plugins.resource_monitor.duration(parseInt(self.settingsViewModel.settings.plugins.resource_monitor.duration()));
+            var refreshRate = parseInt(self.settingsViewModel.settings.plugins.resource_monitor.refresh_rate());
+            if(refreshRate < 1) {
+                refreshRate = 1;
+            }
+            var duration = parseInt(self.settingsViewModel.settings.plugins.resource_monitor.duration());
+            if(duration < 1) {
+                duration = 1;
+            }
+            self.settingsViewModel.settings.plugins.resource_monitor.refresh_rate(refreshRate);
+            self.settingsViewModel.settings.plugins.resource_monitor.duration(duration);
             self.setupPlotDataIfNeeded([self.averageCpuData], [0]);
             self.setupPlotDataIfNeeded([self.memoryData], [0]);
             self.setupPlotDataIfNeeded(self.cpuCoreData, [0]);

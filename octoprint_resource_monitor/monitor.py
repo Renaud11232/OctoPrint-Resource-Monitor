@@ -47,7 +47,13 @@ class Monitor:
 				pass
 
 	def __get_octoprint_cpu(self):
-		total_cpu = self.__process.cpu_percent()
+		try:
+			# Don't know why and how
+			# But his can sometimes raise a NoSuchProcessException
+			total_cpu = self.__process.cpu_percent()
+		except psutil.NoSuchProcess:
+			self.__process = psutil.Process()
+			total_cpu = self.__process.cpu_percent()
 		for child in self.__children:
 			try:
 				total_cpu += child.cpu_percent()
