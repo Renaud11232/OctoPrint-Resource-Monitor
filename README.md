@@ -34,6 +34,14 @@ plugins:
         - /media/example
 ```
 
+## REST API
+
+There is an API endpoint to get all resource usage as one json object.
+
+`GET /plugin/resource_monitor/stats`
+
+You will need to authenticate using an OctoPrint API token.
+
 ## Need help ?
 
 If you need help please [open an issue](https://github.com/Renaud11232/OctoPrint-Resource-Monitor/issues/new).
