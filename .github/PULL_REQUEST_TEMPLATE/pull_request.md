@@ -1,13 +1,4 @@
----
-name: Pull request
-about: Suggest changes to the existing code
-title: "[PR]"
-labels: ''
-assignees: ''
-
----
-
-Thanks you for contributing to OctoPrint-Resource-Monitor, it's very appreciated !
+Thank you for contributing to OctoPrint-Resource-Monitor, it's very appreciated !
 
 Before submitting this PR, make sure you followed the following guidelines.
 
