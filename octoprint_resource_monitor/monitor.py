@@ -5,9 +5,7 @@ import time
 class Monitor:
 
 	def __init__(self, network_exceptions, disk_exceptions):
-		self.__process = psutil.Process()
-		# First call so it does not return 0 on next call
-		self.__process.cpu_percent()
+		self.__init_process()
 		self.__init_children()
 		self.__network_exceptions = network_exceptions
 		self.__disk_exceptions = disk_exceptions
@@ -24,6 +22,11 @@ class Monitor:
 			cpu_temp = temp["cpu_thermal"][0]._asdict()
 		return cpu_temp
 
+	def __init_process(self):
+		self.__process = psutil.Process()
+		# First call so it does not return 0 on next call
+		self.__process.cpu_percent()
+
 	def get_cpu(self):
 		cpu_freq = psutil.cpu_freq()
 		return dict(
@@ -38,9 +41,13 @@ class Monitor:
 		)
 
 	def __init_children(self):
-		self.__children = self.__process.children(recursive=True)
+		try:
+			self.__children = self.__process.children(recursive=True)
+		except psutil.NoSuchProcess:
+			self.__init_process()
+			self.__children = self.__process.children(recursive=True)
 		for child in self.__children:
-			# First call so it does not return 0 on next call, process might be die between calls
+			# First call so it does not return 0 on next call, process might die between calls
 			try:
 				child.cpu_percent()
 			except psutil.NoSuchProcess:
@@ -52,7 +59,7 @@ class Monitor:
 			# But his can sometimes raise a NoSuchProcessException
 			total_cpu = self.__process.cpu_percent()
 		except psutil.NoSuchProcess:
-			self.__process = psutil.Process()
+			self.__init_process()
 			total_cpu = self.__process.cpu_percent()
 		for child in self.__children:
 			try:
