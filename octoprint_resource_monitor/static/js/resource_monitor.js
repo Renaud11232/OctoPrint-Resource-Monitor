@@ -258,16 +258,18 @@ $(function() {
             var newFrameLength = self.frameLength();
             if(newFrameLength > 0) {
                 plotDatas.forEach(function (plotData) {
-                    if (plotData.getFrameCount() !== newFrameCount) {
-                        plotData.setFrameCount(newFrameCount);
-                        changed = true;
-                    }
-                    if (plotData.getFrameLength() !== newFrameLength) {
-                        plotData.setFrameLength(newFrameLength);
-                        changed = true;
-                    }
-                    if (changed) {
-                        plotData.initData(defaultValues);
+                    if(plotData) {
+                        if (plotData.getFrameCount() !== newFrameCount) {
+                            plotData.setFrameCount(newFrameCount);
+                            changed = true;
+                        }
+                        if (plotData.getFrameLength() !== newFrameLength) {
+                            plotData.setFrameLength(newFrameLength);
+                            changed = true;
+                        }
+                        if (changed) {
+                            plotData.initData(defaultValues);
+                        }
                     }
                 });
             }
