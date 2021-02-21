@@ -33,9 +33,6 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def get_settings_version(self):
 		return 1
 
-	def on_settings_initialized(self):
-		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]), self._settings.get(["disk", "exceptions"]))
-
 	def interval(self):
 		timestamp = time.time()
 		return math.ceil(timestamp) - timestamp
@@ -47,6 +44,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
 	def on_after_startup(self):
+		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]),
+								 self._settings.get(["disk", "exceptions"]), self._logger)
 		RepeatedTimer(self.interval, self.check_resources).start()
 
 	def get_assets(self):
