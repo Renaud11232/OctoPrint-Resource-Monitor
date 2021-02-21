@@ -8,9 +8,11 @@ assignees: ''
 ---
 
 **Describe the bug**
+
 A clear and concise description of what the bug is.
 
 **To Reproduce**
+
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
@@ -18,12 +20,15 @@ Steps to reproduce the behavior:
 4. See error
 
 **Expected behavior**
+
 A clear and concise description of what you expected to happen.
 
 **Screenshots**
+
 If applicable, add screenshots to help explain your problem.
 
 **Version of OctoPrint-Resource-Monitor**
+
 What version are you using, how was it installed ?
 
 **Server configuration**
@@ -31,8 +36,10 @@ What version are you using, how was it installed ?
  - Browser [e.g. chrome, safari]
  - Python version [e.G. 2.7, 3.6, ...]
 
-**OctoPrint logs**
+**OctoPrint logs with `octoprint.plugins.resource_monitor` set to DEBUG**
+
 Upload your logs here
 
 **Browser console logs**
-Upload the logs of your browser here, on Chrome press F12
+
+Upload the logs of your browser here, on Chrome press F12 and go in the console tab
