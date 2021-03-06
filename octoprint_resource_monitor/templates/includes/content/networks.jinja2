@@ -5,10 +5,18 @@
                 <h4>{{ _("Network") }} {{ loop.index - 1 }}</h4>
             </div>
         </div>
+        <!-- ko with: network()[{{ loop.index - 1 }}]-->
+            <div class="row-fluid resource-scale">
+                <span class="tiny-text" data-bind="text: filesize($root.maxSpeeds()[{{ loop.index - 1 }}], {bits: true})"></span>/s
+            </div>
+        <!-- /ko -->
         <div class="row-fluid">
             <div class="span12 detail-plot-container">
                 <div class="detail-plot"></div>
             </div>
+        </div>
+        <div class="row-fluid resource-scale">
+            <span class="tiny-text">0 b/s</span>
         </div>
         <!-- ko with: network()[{{ loop.index - 1 }}]-->
             <div class="row-fluid resource-details">

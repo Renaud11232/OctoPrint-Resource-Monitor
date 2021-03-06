@@ -5,11 +5,21 @@
                 <h4>{{ _("Temperature") }}</h4>
             </div>
         </div>
+        <!-- ko with: maxTemp() -->
+            <div class="row-fluid resource-scale">
+                <span class="tiny-text" data-bind="text: $data"></span>
+            </div>
+        <!-- /ko -->
         <div class="row-fluid">
             <div class="span12 detail-plot-container">
                 <div class="detail-plot"></div>
             </div>
         </div>
+        <!-- ko with: minTemp() -->
+            <div class="row-fluid resource-scale">
+                <span class="tiny-text" data-bind="text: $data"></span>
+            </div>
+        <!-- /ko -->
         <!-- ko with: temp() -->
             <div class="row-fluid resource-details">
                 <div class="span4">

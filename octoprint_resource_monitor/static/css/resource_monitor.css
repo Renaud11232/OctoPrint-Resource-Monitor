@@ -1,8 +1,5 @@
 #tab_plugin_resource_monitor {
-    margin-left: -10px;
-    margin-right: -10px;
-    margin-top: -5px;
-    margin-bottom: -5px;
+    margin: -5px -10px;
 }
 
 #tab_plugin_resource_monitor .nav-list > li > a {
@@ -12,9 +9,9 @@
 }
 
 #tab_plugin_resource_monitor .tab-content {
-    border-right: 0px;
-    border-bottom: 0px;
-    border-left: 0px;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
 }
 
 #tab_plugin_resource_monitor .mini-plot {
@@ -80,4 +77,9 @@
 
 #tab_plugin_resource_monitor .resource-details {
     margin-top: 15px;
+}
+
+#tab_plugin_resource_monitor .resource-scale {
+    text-align: right;
+    height: 17px;
 }

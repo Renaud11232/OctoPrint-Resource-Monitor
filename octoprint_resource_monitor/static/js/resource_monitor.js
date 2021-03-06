@@ -16,11 +16,14 @@ $(function() {
 
         self.cpu = ko.observable();
         self.temp = ko.observable();
+        self.minTemp = ko.observable();
+        self.maxTemp = ko.observable();
         self.memory = ko.observable();
         self.partitions = ko.observableArray();
         self.network = ko.observableArray();
         self.downloadSpeeds = ko.observableArray();
         self.uploadSpeeds = ko.observableArray();
+        self.maxSpeeds = ko.observableArray();
         self.battery = ko.observable();
 
         self.miniCpuPlot = null;
@@ -91,8 +94,12 @@ $(function() {
             self.fahrenheitTempData.pushData([newValue.fahrenheit.current]);
             if(unit === "celsius") {
                 self.setPlotsData([self.miniTempPlot, self.tempPlot], self.celsiusTempData, 100, 0);
+                self.minTemp("0 °C");
+                self.maxTemp("100 °C");
             } else if(unit === "fahrenheit") {
                 self.setPlotsData([self.miniTempPlot, self.tempPlot], self.fahrenheitTempData, 212, 32);
+                self.minTemp("32 °F");
+                self.maxTemp("212 °F");
             }
         });
 
@@ -124,6 +131,7 @@ $(function() {
             }
             var uploadSpeeds = [];
             var downloadSpeeds = [];
+            var maxSpeeds = [];
             self.networkData.forEach(function(network, networkIndex) {
                 var download = 0;
                 var upload = 0;
@@ -133,17 +141,21 @@ $(function() {
                 }
                 uploadSpeeds.push(upload);
                 downloadSpeeds.push(download);
+                var maxSpeed = 0;
                 network.pushData([download, upload]);
                 self.setPlotsData([self.miniNetworkPlots[networkIndex]], network);
                 var networkPlot = self.networkPlots[networkIndex];
                 if(networkPlot) {
                     networkPlot.setData(network, [gettext("Download"), gettext("Upload")]);
+                    maxSpeed = networkPlot.plot.getAxes().yaxis.max;
                 }
+                maxSpeeds.push(maxSpeed);
                 self.lastReceivedBytes[networkIndex] = newValue[networkIndex].bytes_recv;
                 self.lastSentBytes[networkIndex] = newValue[networkIndex].bytes_sent;
             });
             self.downloadSpeeds(downloadSpeeds);
             self.uploadSpeeds(uploadSpeeds);
+            self.maxSpeeds(maxSpeeds);
         });
 
         self.battery.subscribe(function(newValue) {
