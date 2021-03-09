@@ -86,7 +86,19 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				repo="OctoPrint-Resource-Monitor",
 				current=self._plugin_version,
 
-				pip="https://github.com/Renaud11232/OctoPrint-Resource-Monitor/archive/{target_version}.zip"
+				pip="https://github.com/Renaud11232/OctoPrint-Resource-Monitor/archive/{target_version}.zip",
+
+				stable_branch=dict(
+					name="Stable",
+					branch="master"
+				),
+
+				prerelease_branches=[
+					dict(
+						name="Prerelease",
+						branch="prerelease"
+					)
+				]
 			)
 		)
 
