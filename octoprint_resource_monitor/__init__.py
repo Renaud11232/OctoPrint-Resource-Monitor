@@ -10,7 +10,6 @@ from .monitor import Monitor
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
-							octoprint.plugin.StartupPlugin,
 							octoprint.plugin.AssetPlugin,
 							octoprint.plugin.TemplatePlugin,
 							octoprint.plugin.BlueprintPlugin):
@@ -43,7 +42,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		message = self.__monitor.get_all_resources()
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
-	def on_startup(self, host, port):
+	def initialize(self):
 		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]),
 								 self._settings.get(["disk", "exceptions"]), self._logger)
 		RepeatedTimer(self.interval, self.check_resources).start()
