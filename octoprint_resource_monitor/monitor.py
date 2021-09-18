@@ -54,7 +54,7 @@ class Monitor:
 			thread_count=thread_count,
 			pids=pids,
 			uptime=int(time.time() - boot_time),
-			octoprint=self.__get_octoprint_cpu()
+			octoprint=self.__get_octoprint_cpu(average)
 		)
 
 	def __init_children(self):
@@ -72,7 +72,7 @@ class Monitor:
 				self.__logger.debug("No process found when calling cpu_percent() on %r" % (child,))
 				pass
 
-	def __get_octoprint_cpu(self):
+	def __get_octoprint_cpu(self, average):
 		try:
 			# Don't know why and how
 			# But his can sometimes raise a NoSuchProcessException
@@ -90,7 +90,7 @@ class Monitor:
 		self.__init_children()
 		cpu_count = psutil.cpu_count()
 		self.__logger.debug("cpu_count() : %r" % (cpu_count,))
-		return total_cpu / cpu_count
+		return min(total_cpu / cpu_count, average)
 
 	def get_cpu_temp(self):
 		# return dict(
