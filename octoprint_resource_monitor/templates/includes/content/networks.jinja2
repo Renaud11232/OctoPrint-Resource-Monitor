@@ -36,10 +36,17 @@
                 <!-- /ko -->
             </div>
             <div class="row-fluid">
-                <!-- ko with: addrs.find(function(address){return address.family === 2;}) -->
+                <!-- ko with: addrs.filter(function(address){return address.family === 2;}) -->
                     <div class="span4">
-                        <span class="tiny-text">{{ _("IPv4 address") }}</span><br/>
-                        <span data-bind="text: address"></span>
+                        <!-- ko if: $data.length === 1 -->
+                            <span class="tiny-text">{{ _("IPv4 address") }}</span><br/>
+                        <!-- /ko -->
+                        <!-- ko if: $data.length > 1 -->
+                            <span class="tiny-text">{{ _("IPv4 addresses") }}</span><br/>
+                        <!-- /ko -->
+                        <ul data-bind="foreach: $data" class="unstyled address-list">
+                            <li data-bind="text: address"></li>
+                        </ul>
                     </div>
                 <!-- /ko -->
                 <!-- ko with: addrs.find(function(address){return address.family === -1 || address.family === 17;}) -->
@@ -50,10 +57,17 @@
                 <!-- /ko -->
             </div>
             <div class="row-fluid">
-                <!-- ko with: addrs.find(function(address){return address.family === 23 || address.family === 10;}) -->
+                <!-- ko with: addrs.filter(function(address){return address.family === 23 || address.family === 10;}) -->
                     <div class="span12">
-                        <span class="tiny-text">{{ _("IPv6 address") }}</span><br/>
-                        <span data-bind="text: address"></span>
+                        <!-- ko if: $data.length === 1 -->
+                            <span class="tiny-text">{{ _("IPv6 address") }}</span><br/>
+                        <!-- /ko -->
+                        <!-- ko if: $data.length > 1 -->
+                            <span class="tiny-text">{{ _("IPv6 addresses") }}</span><br/>
+                        <!-- /ko -->
+                        <ul data-bind="foreach: $data" class="unstyled address-list">
+                            <li data-bind="text: address"></li>
+                        </ul>
                     </div>
                 <!-- /ko -->
             </div>
