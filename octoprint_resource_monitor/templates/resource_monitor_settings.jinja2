@@ -34,7 +34,7 @@
         <div class="control-group">
             <label class="control-label" for="resource_monitor_network_exceptions">{{ _('Network Exceptions') }}</label>
             <div class="controls">
-                <select id="resource_monitor_network_exceptions" class="span6" multiple="true" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.network.exceptions">
+                <select id="resource_monitor_network_exceptions" class="span6" multiple="multiple" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.network.exceptions">
                     {% for nic in plugin_resource_monitor_all_network %}
                         <option value="{{ nic.name }}">{{ nic.name }}</option>
                     {% endfor %}
@@ -44,7 +44,7 @@
         <div class="control-group">
             <label class="control-label" for="resource_monitor_disk_exceptions">{{ _('Disk Exceptions') }}</label>
             <div class="controls">
-                <select id="resource_monitor_disk_exceptions" class="span6" multiple="true" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.disk.exceptions">
+                <select id="resource_monitor_disk_exceptions" class="span6" multiple="multiple" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.disk.exceptions">
                     {% for disk in plugin_resource_monitor_all_partitions %}
                         <option value="{{ disk.mountpoint }}">{{ disk.mountpoint }}</option>
                     {% endfor %}
