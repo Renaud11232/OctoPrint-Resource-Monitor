@@ -1,6 +1,15 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+import logging
+import logging.handlers
+try:
+	import cProfile as profile
+except ImportError:
+	import profile
+import io
+import pstats
+
 import flask
 import octoprint.plugin
 from octoprint.server import admin_permission
@@ -9,7 +18,7 @@ from octoprint.util import RepeatedTimer
 import time
 import math
 from .monitor import Monitor
-from .perf_test import PerformanceTester
+from .perf import PerformanceTester
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
@@ -29,7 +38,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				unit="celsius"
 			),
 			refresh_rate=1,
-			duration=60
+			duration=60,
+			enable_profiling=False
 		)
 
 	def get_settings_version(self):
@@ -42,14 +52,34 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def check_resources(self):
 		if not self._plugin_manager.registered_clients:  # No connected clients to UI
 			return False
-		message = self.__monitor.get_all_resources()
+		if self._settings.getBoolean(["enable_profiling"]):
+			pr = profile.Profile()
+			pr.enable()
+			message = self.__monitor.get_all_resources()
+			pr.disable()
+			s = io.StringIO()
+			ps = pstats.Stats(pr, stream=s).sort_stats("cumulative")
+			ps.print_stats()
+			self._profiling_logger.debug(s.getvalue())
+		else:
+			message = self.__monitor.get_all_resources()
 		self._plugin_manager.send_plugin_message(self._identifier, message)
 
 	def initialize(self):
+		self.__init_profiling_logger()
 		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]),
 								 self._settings.get(["disk", "exceptions"]), self._logger)
 		RepeatedTimer(self.interval, self.check_resources).start()
 		self.__perf_test = PerformanceTester(lambda x: self._plugin_manager.send_plugin_message(self._identifier, x))
+
+	def __init_profiling_logger(self):
+		self._profiling_logger = logging.getLogger("octoprint.plugins.resource_monitor.profiling")
+		profiling_logger_handler = logging.handlers.RotatingFileHandler(self._settings.get_plugin_logfile_path(postfix="profiling"), maxBytes=20*1024*1024)
+		profiling_logger_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
+		profiling_logger_handler.setLevel(logging.DEBUG)
+		self._profiling_logger.addHandler(profiling_logger_handler)
+		self._profiling_logger.setLevel(logging.DEBUG)
+		self._profiling_logger.propagate = False
 
 	def get_assets(self):
 		return dict(

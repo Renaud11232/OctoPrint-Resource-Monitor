@@ -10,6 +10,7 @@ class PerformanceTester:
 	def __init__(self, message_function):
 		self.__push_perf = message_function
 		self.__templ = "%-25s %s"
+		self.__timings = []
 
 	def start_test(self):
 		self.__timings = []

@@ -69,6 +69,14 @@
                         <button role="button" class="btn" data-bind="click: runPerformanceTest"><i class="fas fa-tachometer-alt"></i> {{ _('Run a performance test') }}</button>
                     </div>
                 </div>
+                <div class="control-group" title="{{ _('Enable profiling') }}">
+                    <div class="controls">
+                        <label class="checkbox" for="resource_monitor_enable_profiling">
+                            <input type="checkbox" id="resource_monitor_enable_profiling" data-bind="checked: settingsViewModel.settings.plugins.resource_monitor.enable_profiling" />{{ _('Enable profiling') }}
+                        </label>
+                        <span class="help-inline">{{ _('Do not forget to disable this afterwards. This will create large log files.') }}</span>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
