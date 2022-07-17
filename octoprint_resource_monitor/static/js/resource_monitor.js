@@ -255,12 +255,18 @@ $(function() {
 
         self.onDataUpdaterPluginMessage = function(plugin, message) {
             if(plugin === "resource_monitor") {
-                self.cpu(message.cpu);
-                self.temp(message.temp);
-                self.memory(message.memory);
-                self.partitions(message.partitions);
-                self.network(message.network);
-                self.battery(message.battery);
+                if(message.perf_test) {
+                    self.performanceLogs.push(message.content);
+                    var pre = $("#resource_monitor_perf_logs pre")
+                    pre.scrollTop(pre.prop("scrollHeight"));
+                } else {
+                    self.cpu(message.cpu);
+                    self.temp(message.temp);
+                    self.memory(message.memory);
+                    self.partitions(message.partitions);
+                    self.network(message.network);
+                    self.battery(message.battery);
+                }
             }
         };
 
@@ -286,6 +292,19 @@ $(function() {
                 });
             }
         };
+
+        self.performanceLogs = ko.observableArray([]);
+
+        self.runPerformanceTest = function() {
+            self.performanceLogs([]);
+            $.ajax({
+                type: "POST",
+                headers: OctoPrint.getRequestHeaders(),
+                url: "/plugin/resource_monitor/perf_test"
+            }).done(function() {
+                $("#resource_monitor_perf_logs").modal("show");
+            });
+        }
 
         self.onSettingsBeforeSave = function() {
             var refreshRate = parseInt(self.settingsViewModel.settings.plugins.resource_monitor.refresh_rate());
@@ -317,7 +336,8 @@ $(function() {
         ],
         elements: [
             "#tab_plugin_resource_monitor",
-            "#settings_plugin_resource_monitor"
+            "#settings_plugin_resource_monitor",
+            "#resource_monitor_perf_logs"
         ]
     });
 });

@@ -51,9 +51,25 @@
                 </select>
             </div>
         </div>
+        <p>
+            {{ _("Select what you want to <strong>hide</strong>.") }}<br/>
+            {{ _("Use <code>CTRL+Click</code> to select/deselect multiple options.") }}
+        </p>
+        <div>
+            <div>
+                <small>
+                    <a href="#" class="muted" onclick="$(this).children().toggleClass('fa-caret-right fa-caret-down').parent().parent().parent().next().slideToggle('fast')">
+                        <i class="fas fa-caret-right"></i> Advanced options
+                    </a>
+                </small>
+            </div>
+            <div class="hide">
+                <div class="control-group" title="{{ _('Run a performance test') }}">
+                    <div class="controls">
+                        <button role="button" class="btn" data-bind="click: runPerformanceTest"><i class="fas fa-magic"></i> {{ _('Run a performance test') }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
-<p>
-    {{ _("Select what you want to <strong>hide</strong>.") }}<br/>
-    {{ _("Use <code>CTRL+Click</code> to select/deselect multiple options.") }}
-</p>

@@ -87,3 +87,10 @@
 .address-list {
     margin-bottom: 0;
 }
+
+pre.scrollable-pre {
+    overflow: auto;
+    word-wrap: normal;
+    white-space: pre;
+    height: 400px;
+}

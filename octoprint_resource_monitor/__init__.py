@@ -3,10 +3,13 @@ from __future__ import absolute_import
 
 import flask
 import octoprint.plugin
+from octoprint.server import admin_permission
+from octoprint.server.util.flask import restricted_access
 from octoprint.util import RepeatedTimer
 import time
 import math
 from .monitor import Monitor
+from .perf_test import PerformanceTester
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
@@ -46,6 +49,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]),
 								 self._settings.get(["disk", "exceptions"]), self._logger)
 		RepeatedTimer(self.interval, self.check_resources).start()
+		self.__perf_test = PerformanceTester(lambda x: self._plugin_manager.send_plugin_message(self._identifier, x))
 
 	def get_assets(self):
 		return dict(
@@ -73,6 +77,15 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	@octoprint.plugin.BlueprintPlugin.route("/stats", methods=["GET"])
 	def api(self):
 		return flask.make_response(flask.jsonify(self.__monitor.get_all_resources()), 200)
+
+	@octoprint.plugin.BlueprintPlugin.route("/perf_test", methods=["POST"])
+	@restricted_access
+	@admin_permission.require(403)
+	def perf_test(self):
+		self.__perf_test.start_test()
+		return flask.make_response(flask.jsonify(dict(
+			status="OK"
+		)), 200)
 
 	def get_update_information(self):
 		return dict(

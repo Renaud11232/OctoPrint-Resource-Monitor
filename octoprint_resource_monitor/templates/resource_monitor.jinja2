@@ -1,0 +1,11 @@
+<div id="resource_monitor_perf_logs" data-backdrop="static" class="modal modal-lg hide fade">
+    <div class="modal-header">
+        <h3>{{ _('Performance test') }}</h3>
+    </div>
+    <div class="modal-body">
+        <pre class="scrollable-pre" data-bind="text: performanceLogs().join('\n')"></pre>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">{{ _('Close') }}</button>
+    </div>
+</div>
