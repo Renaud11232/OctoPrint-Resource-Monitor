@@ -1,4 +1,3 @@
-from threading import Thread
 import psutil
 import inspect
 import os
@@ -7,15 +6,10 @@ from timeit import default_timer as timer
 
 class PerformanceTester:
 
-	def __init__(self, message_function):
-		self.__push_perf = message_function
+	def __init__(self):
 		self.__templ = "%-25s %s"
 		self.__timings = []
-
-	def start_test(self):
-		self.__timings = []
-		thread = Thread(target=self.__do_perf_test)
-		thread.start()
+		self.__output = []
 
 	def __timecall(self, title, fun, *args, **kw):
 		t = timer()
@@ -31,12 +25,11 @@ class PerformanceTester:
 			self.__print_line(s)
 
 	def __print_line(self, s):
-		self.__push_perf(dict(
-			perf_test=True,
-			content=s
-		))
+		self.__output.append(s)
 
-	def __do_perf_test(self):
+	def run_test(self):
+		self.__output = []
+		self.__timings = []
 		public_apis = []
 		ignore = ['wait_procs', 'process_iter', 'win_service_get', 'win_service_iter']
 		if psutil.MACOS:
@@ -74,4 +67,4 @@ class PerformanceTester:
 				fun = getattr(p, name)
 				self.__timecall(name, fun)
 		self.__print_timings()
-		self.__print_line("DONE")
+		return "\n".join(self.__output)

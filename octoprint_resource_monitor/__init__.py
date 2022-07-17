@@ -3,6 +3,9 @@ from __future__ import absolute_import
 
 import logging
 import logging.handlers
+
+from flask import send_file
+
 try:
 	import cProfile as profile
 except ImportError:
@@ -70,7 +73,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]),
 								 self._settings.get(["disk", "exceptions"]), self._logger)
 		RepeatedTimer(self.interval, self.check_resources).start()
-		self.__perf_test = PerformanceTester(lambda x: self._plugin_manager.send_plugin_message(self._identifier, x))
+		self.__perf_test = PerformanceTester()
 
 	def __init_profiling_logger(self):
 		self._profiling_logger = logging.getLogger("octoprint.plugins.resource_monitor.profiling")
@@ -108,14 +111,17 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def api(self):
 		return flask.make_response(flask.jsonify(self.__monitor.get_all_resources()), 200)
 
-	@octoprint.plugin.BlueprintPlugin.route("/perf_test", methods=["POST"])
+	@octoprint.plugin.BlueprintPlugin.route("/performance_test", methods=["GET"])
 	@restricted_access
 	@admin_permission.require(403)
-	def perf_test(self):
-		self.__perf_test.start_test()
-		return flask.make_response(flask.jsonify(dict(
-			status="OK"
-		)), 200)
+	def performance_test(self):
+		result = self.__perf_test.run_test()
+		return send_file(
+			io.BytesIO(result.encode("utf8")),
+			mimetype="text/plain",
+			as_attachment=True,
+			download_name="psutil_timings.txt"
+		)
 
 	def get_update_information(self):
 		return dict(
