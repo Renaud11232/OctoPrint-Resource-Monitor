@@ -7,7 +7,6 @@ class Monitor:
 	def __init__(self, network_exceptions, disk_exceptions, logger):
 		self.__logger = logger
 		self.__init_process()
-		self.__init_children()
 		self.__network_exceptions = network_exceptions
 		self.__disk_exceptions = disk_exceptions
 
@@ -54,42 +53,17 @@ class Monitor:
 			thread_count=thread_count,
 			pids=pids,
 			uptime=int(time.time() - boot_time),
-			octoprint=self.__get_octoprint_cpu(average)
+			octoprint=self.__get_octoprint_cpu(average, core_count)
 		)
 
-	def __init_children(self):
+	def __get_octoprint_cpu(self, average, core_count):
 		try:
-			self.__children = self.__process.children(recursive=True)
-		except psutil.NoSuchProcess:
-			self.__logger.debug("No process found when calling children(recursive=True) on %r" % (self.__process,))
-			self.__init_process()
-			self.__children = self.__process.children(recursive=True)
-		for child in self.__children:
-			# First call so it does not return 0 on next call, process might die between calls
-			try:
-				child.cpu_percent()
-			except psutil.NoSuchProcess:
-				self.__logger.debug("No process found when calling cpu_percent() on %r" % (child,))
-
-	def __get_octoprint_cpu(self, average):
-		try:
-			# Don't know why and how
-			# But his can sometimes raise a NoSuchProcessException
 			total_cpu = self.__process.cpu_percent()
 		except psutil.NoSuchProcess:
 			self.__logger.debug("No process found when calling cpu_percent() on %r" % (self.__process,))
 			self.__init_process()
 			total_cpu = self.__process.cpu_percent()
-		for child in self.__children:
-			try:
-				total_cpu += child.cpu_percent()
-			except psutil.NoSuchProcess:
-				self.__logger.debug("No process found when calling cpu_percent() on %r" % (child,))
-				pass
-		self.__init_children()
-		cpu_count = psutil.cpu_count()
-		self.__logger.debug("cpu_count() : %r" % (cpu_count,))
-		return min(total_cpu / cpu_count, average)
+		return min(total_cpu / core_count, average)
 
 	def get_cpu_temp(self):
 		# return dict(
