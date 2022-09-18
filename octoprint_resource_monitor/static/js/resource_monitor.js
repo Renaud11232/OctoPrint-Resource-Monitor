@@ -308,6 +308,15 @@ $(function() {
             self.setupPlotDataIfNeeded(self.networkData, [0, 0]);
             self.setupPlotDataIfNeeded([self.batteryData], [0]);
         };
+
+        self.onAllBound = function() {
+            new PNotify({
+                title: gettext("Resource Monitor"),
+                text: gettext('Multiple users have reported that this plugin can cause the printer to freeze and cause blobs or failed prints. If you are experiencing this issue, please disable Resource Monitor from the settings page. This issue is being tracked <a href="https://github.com/Renaud11232/OctoPrint-Resource-Monitor/issues/37" target="_blank">here</a>.'),
+                hide: false,
+                type: "warning"
+            });
+        };
     }
 
     OCTOPRINT_VIEWMODELS.push({
