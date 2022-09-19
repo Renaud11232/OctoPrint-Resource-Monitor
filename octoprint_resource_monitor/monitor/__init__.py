@@ -104,11 +104,6 @@ class Monitor:
 			partition.update(disk_usage._asdict())
 		return partitions
 
-	def get_disks(self):
-		io_counters = psutil.disk_io_counters(perdisk=True, nowrap=False)
-		self.__logger.debug("disk_io_counters() : %r" % (io_counters,))
-		return io_counters
-
 	def get_network(self, all):
 		io_counters = psutil.net_io_counters(pernic=True)
 		self.__logger.debug("net_io_counters(pernic=True) : %r" % (io_counters,))
@@ -148,6 +143,5 @@ class Monitor:
 			memory=self.get_memory(),
 			partitions=self.get_partitions(all=False),
 			network=self.get_network(all=False),
-			battery=self.get_battery(),
-			disks=self.get_disks()
+			battery=self.get_battery()
 		)
