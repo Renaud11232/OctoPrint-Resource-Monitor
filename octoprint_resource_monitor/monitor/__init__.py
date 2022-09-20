@@ -109,8 +109,8 @@ class Monitor:
 		self.__logger.debug("net_io_counters(pernic=True) : %r" % (io_counters,))
 		addrs = psutil.net_if_addrs()
 		self.__logger.debug("net_if_addrs() : %r" % (addrs,))
-		stats = psutil.net_if_stats()
-		self.__logger.debug("net_if_stats() : %r" % (stats,))
+		# stats = psutil.net_if_stats()
+		# self.__logger.debug("net_if_stats() : %r" % (stats,))
 		final = []
 		for nic_name in io_counters:
 			if all or nic_name not in self.__network_exceptions:
@@ -119,8 +119,8 @@ class Monitor:
 					addrs=[addr._asdict() for addr in addrs[nic_name]]
 				)
 				nic.update(io_counters[nic_name]._asdict())
-				if nic_name in stats:
-					nic.update(stats[nic_name]._asdict())
+				# if nic_name in stats:
+				# 	nic.update(stats[nic_name]._asdict())
 				final.append(nic)
 		return final
 
