@@ -77,6 +77,13 @@
                         <span class="help-inline">{{ _('Do not forget to disable this afterwards. This will create large log files.') }}</span>
                     </div>
                 </div>
+                <div class="control-group" title="{{ _('Disable warning related to the freezing issue') }}">
+                    <div class="controls">
+                        <label class="checkbox" for="resource_monitor_enable_profiling">
+                            <input type="checkbox" id="resource_monitor_enable_profiling" data-bind="checked: settingsViewModel.settings.plugins.resource_monitor.disable_freeze_warning" />{{ _('Disable warning related to the freezing issue') }}
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

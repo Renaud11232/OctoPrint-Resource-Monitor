@@ -42,7 +42,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			),
 			refresh_rate=1,
 			duration=60,
-			enable_profiling=False
+			enable_profiling=False,
+			disable_freeze_warning=False
 		)
 
 	def get_settings_version(self):
