@@ -34,7 +34,7 @@
         <div class="control-group">
             <label class="control-label" for="resource_monitor_network_exceptions">{{ _('Network Exceptions') }}</label>
             <div class="controls">
-                <select id="resource_monitor_network_exceptions" class="span6" multiple="true" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.network.exceptions">
+                <select id="resource_monitor_network_exceptions" class="span6" multiple="multiple" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.network.exceptions">
                     {% for nic in plugin_resource_monitor_all_network %}
                         <option value="{{ nic.name }}">{{ nic.name }}</option>
                     {% endfor %}
@@ -44,16 +44,34 @@
         <div class="control-group">
             <label class="control-label" for="resource_monitor_disk_exceptions">{{ _('Disk Exceptions') }}</label>
             <div class="controls">
-                <select id="resource_monitor_disk_exceptions" class="span6" multiple="true" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.disk.exceptions">
+                <select id="resource_monitor_disk_exceptions" class="span6" multiple="multiple" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.disk.exceptions">
                     {% for disk in plugin_resource_monitor_all_partitions %}
                         <option value="{{ disk.mountpoint }}">{{ disk.mountpoint }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
+        <p>
+            {{ _("Select what you want to <strong>hide</strong>.") }}<br/>
+            {{ _("Use <code>CTRL+Click</code> to select/deselect multiple options.") }}
+        </p>
+        <div>
+            <div>
+                <small>
+                    <a href="#" class="muted" onclick="$(this).children().toggleClass('fa-caret-right fa-caret-down').parent().parent().parent().next().slideToggle('fast')">
+                        <i class="fas fa-caret-right"></i> Advanced options
+                    </a>
+                </small>
+            </div>
+            <div class="hide">
+                <div class="control-group" title="{{ _('Disable warning related to the freezing issue') }}">
+                    <div class="controls">
+                        <label class="checkbox" for="resource_monitor_enable_profiling">
+                            <input type="checkbox" id="resource_monitor_enable_profiling" data-bind="checked: settingsViewModel.settings.plugins.resource_monitor.disable_freeze_warning" />{{ _('Disable warning related to the freezing issue') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
-<p>
-    {{ _("Select what you want to <strong>hide</strong>.") }}<br/>
-    {{ _("Use <code>CTRL+Click</code> to select/deselect multiple options.") }}
-</p>

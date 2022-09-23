@@ -26,7 +26,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 				unit="celsius"
 			),
 			refresh_rate=1,
-			duration=60
+			duration=60,
+			disable_freeze_warning=False
 		)
 
 	def get_settings_version(self):
