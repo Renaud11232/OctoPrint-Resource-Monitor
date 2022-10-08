@@ -64,24 +64,20 @@
                 </small>
             </div>
             <div class="hide">
-                <div class="control-group" title="{{ _('Run a performance test') }}">
+                <div class="control-group" title="{{ _('Display network interface speed') }}">
                     <div class="controls">
-                        <a role="button" class="btn" href="/plugin/resource_monitor/performance_test" target="_blank"><i class="fas fa-tachometer-alt"></i> {{ _('Run a performance test') }}</a>
+                        <label class="checkbox" for="resource_monitor_use_net_if_stats">
+                            <input type="checkbox" id="resource_monitor_use_net_if_stats" data-bind="checked: settingsViewModel.settings.plugins.resource_monitor.use_net_if_stats" />{{ _('Display network interface speed') }}
+                        </label>
+                        <span class="help-inline">{{ _('Enable this can cause printer freezes and blobs for some users') }}</span>
                     </div>
                 </div>
-                <div class="control-group" title="{{ _('Enable profiling') }}">
+                <div class="control-group" title="{{ _('Enable debug profiling') }}">
                     <div class="controls">
                         <label class="checkbox" for="resource_monitor_enable_profiling">
                             <input type="checkbox" id="resource_monitor_enable_profiling" data-bind="checked: settingsViewModel.settings.plugins.resource_monitor.enable_profiling" />{{ _('Enable profiling') }}
                         </label>
                         <span class="help-inline">{{ _('Do not forget to disable this afterwards. This will create large log files.') }}</span>
-                    </div>
-                </div>
-                <div class="control-group" title="{{ _('Disable warning related to the freezing issue') }}">
-                    <div class="controls">
-                        <label class="checkbox" for="resource_monitor_disable_freeze_warning">
-                            <input type="checkbox" id="resource_monitor_disable_freeze_warning" data-bind="checked: settingsViewModel.settings.plugins.resource_monitor.disable_freeze_warning" />{{ _('Disable warning related to the freezing issue') }}
-                        </label>
                     </div>
                 </div>
             </div>

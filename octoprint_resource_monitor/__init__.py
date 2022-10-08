@@ -4,8 +4,6 @@ from __future__ import absolute_import
 import logging
 import logging.handlers
 
-from flask import send_file
-
 try:
 	import cProfile as profile
 except ImportError:
@@ -15,13 +13,10 @@ import pstats
 
 import flask
 import octoprint.plugin
-from octoprint.server import admin_permission
-from octoprint.server.util.flask import restricted_access
 from octoprint.util import RepeatedTimer
 import time
 import math
 from .monitor import Monitor
-from .perf import PerformanceTester
 
 
 class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
@@ -43,11 +38,17 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			refresh_rate=1,
 			duration=60,
 			enable_profiling=False,
-			disable_freeze_warning=False
+			use_net_if_stats=False
 		)
 
 	def get_settings_version(self):
-		return 1
+		return 2
+
+	def on_settings_migrate(self, target, current):
+		current_settings_version = current
+		if current_settings_version is None or current <= 1:
+			self._settings.remove(["disable_freeze_warning"])
+			current_settings_version += 1
 
 	def interval(self):
 		timestamp = time.time()
@@ -71,10 +72,13 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 	def initialize(self):
 		self.__init_profiling_logger()
-		self.__monitor = Monitor(self._settings.get(["network", "exceptions"]),
-								 self._settings.get(["disk", "exceptions"]), self._logger)
+		self.__monitor = Monitor(
+			self._settings.get(["network", "exceptions"]),
+			self._settings.get(["disk", "exceptions"]),
+			self._settings.getBoolean(["use_net_if_stats"]),
+			self._logger
+		)
 		RepeatedTimer(self.interval, self.check_resources).start()
-		self.__perf_test = PerformanceTester()
 
 	def __init_profiling_logger(self):
 		self._profiling_logger = logging.getLogger("octoprint.plugins.resource_monitor.profiling")
@@ -111,18 +115,6 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	@octoprint.plugin.BlueprintPlugin.route("/stats", methods=["GET"])
 	def api(self):
 		return flask.make_response(flask.jsonify(self.__monitor.get_all_resources()), 200)
-
-	@octoprint.plugin.BlueprintPlugin.route("/performance_test", methods=["GET"])
-	@restricted_access
-	@admin_permission.require(403)
-	def performance_test(self):
-		result = self.__perf_test.run_test()
-		return send_file(
-			io.BytesIO(result.encode("utf8")),
-			mimetype="text/plain",
-			as_attachment=True,
-			download_name="psutil_timings.txt"
-		)
 
 	def get_update_information(self):
 		return dict(
