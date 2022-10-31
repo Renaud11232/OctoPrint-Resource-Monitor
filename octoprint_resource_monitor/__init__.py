@@ -45,10 +45,10 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		return 2
 
 	def on_settings_migrate(self, target, current):
-		current_settings_version = current
-		if current_settings_version is None or current <= 1:
+		current_settings_version = 0 if current is None else current
+		if current_settings_version <= 1:
 			self._settings.remove(["disable_freeze_warning"])
-			current_settings_version += 1
+			current_settings_version = 2
 
 	def interval(self):
 		timestamp = time.time()
