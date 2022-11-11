@@ -10,6 +10,7 @@ class Monitor:
 		self.__network_exceptions = network_exceptions
 		self.__disk_exceptions = disk_exceptions
 		self.__use_net_if_stats = use_net_if_stats
+		self.__file_not_found_logged = False
 
 	def __get_cpu_temp(self, temp):
 		if temp is None:
@@ -99,10 +100,19 @@ class Monitor:
 		self.__logger.debug("disk_partitions() : %r" % (disk_partitions,))
 		partitions = [partition._asdict() for partition in disk_partitions if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
 									and partition.fstype not in ["squashfs"]]
+		partitions_to_remove = []
 		for partition in partitions:
-			disk_usage = psutil.disk_usage(partition["mountpoint"])
-			self.__logger.debug('disk_usage(partition["mountpoint"] : %r' % (disk_usage,))
-			partition.update(disk_usage._asdict())
+			try:
+				disk_usage = psutil.disk_usage(partition["mountpoint"])
+				self.__logger.debug('disk_usage(partition["mountpoint"] : %r' % (disk_usage,))
+				partition.update(disk_usage._asdict())
+			except FileNotFoundError:
+				partitions_to_remove.append(partition)
+				if not self.__file_not_found_logged:
+					self.__logger.exception("FileNotFoundError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
+					self.__file_not_found_logged = True
+		for partition_to_remove in partitions_to_remove:
+			partitions.remove(partition_to_remove)
 		return partitions
 
 	def get_network(self, all):
