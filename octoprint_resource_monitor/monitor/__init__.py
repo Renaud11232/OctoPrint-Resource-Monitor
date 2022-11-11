@@ -11,6 +11,8 @@ class Monitor:
 		self.__disk_exceptions = disk_exceptions
 		self.__use_net_if_stats = use_net_if_stats
 		self.__file_not_found_logged = False
+		self.__permission_error_disk_usage_logged = False
+		self.__permission_error_disk_partitions_logged = False
 
 	def __get_cpu_temp(self, temp):
 		if temp is None:
@@ -96,24 +98,35 @@ class Monitor:
 		return virtual_memory._asdict()
 
 	def get_partitions(self, all):
-		disk_partitions = psutil.disk_partitions()
-		self.__logger.debug("disk_partitions() : %r" % (disk_partitions,))
-		partitions = [partition._asdict() for partition in disk_partitions if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
-									and partition.fstype not in ["squashfs"]]
-		partitions_to_remove = []
-		for partition in partitions:
-			try:
-				disk_usage = psutil.disk_usage(partition["mountpoint"])
-				self.__logger.debug('disk_usage(partition["mountpoint"] : %r' % (disk_usage,))
-				partition.update(disk_usage._asdict())
-			except FileNotFoundError:
-				partitions_to_remove.append(partition)
-				if not self.__file_not_found_logged:
-					self.__logger.exception("FileNotFoundError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
-					self.__file_not_found_logged = True
-		for partition_to_remove in partitions_to_remove:
-			partitions.remove(partition_to_remove)
-		return partitions
+		try:
+			disk_partitions = psutil.disk_partitions()
+			self.__logger.debug("disk_partitions() : %r" % (disk_partitions,))
+			partitions = [partition._asdict() for partition in disk_partitions if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
+										and partition.fstype not in ["squashfs"]]
+			partitions_to_remove = []
+			for partition in partitions:
+				try:
+					disk_usage = psutil.disk_usage(partition["mountpoint"])
+					self.__logger.debug('disk_usage(partition["mountpoint"] : %r' % (disk_usage,))
+					partition.update(disk_usage._asdict())
+				except FileNotFoundError:
+					partitions_to_remove.append(partition)
+					if not self.__file_not_found_logged:
+						self.__logger.exception("FileNotFoundError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
+						self.__file_not_found_logged = True
+				except PermissionError:
+					partitions_to_remove.append(partition)
+					if not self.__permission_error_disk_usage_logged:
+						self.__logger.exception("PermissionError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
+						self.__permission_error_disk_usage_logged = True
+			for partition_to_remove in partitions_to_remove:
+				partitions.remove(partition_to_remove)
+			return partitions
+		except PermissionError:
+			if not self.__permission_error_disk_partitions_logged:
+				self.__logger.exception("PermissionError intercepted when calling psutil.disk_partitions, this is expected on android devices, other similar errors won't be logged")
+				self.__permission_error_disk_partitions_logged = True
+			return []
 
 	def get_network(self, all):
 		io_counters = psutil.net_io_counters(pernic=True)
