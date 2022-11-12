@@ -114,11 +114,13 @@ class Monitor:
 					if not self.__file_not_found_logged:
 						self.__logger.exception("FileNotFoundError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
 						self.__file_not_found_logged = True
+					self.__logger.debug("psutil.disk_usage raised a FileNotFoundError for disk %s" % partition["mountpoint"], exc_info=True)
 				except PermissionError:
 					partitions_to_remove.append(partition)
 					if not self.__permission_error_disk_usage_logged:
 						self.__logger.exception("PermissionError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
 						self.__permission_error_disk_usage_logged = True
+					self.__logger.debug("psutil.disk_usage raised a PermissionError for disk %s" % partition["mountpoint"], exc_info=True)
 			for partition_to_remove in partitions_to_remove:
 				partitions.remove(partition_to_remove)
 			return partitions
@@ -126,6 +128,7 @@ class Monitor:
 			if not self.__permission_error_disk_partitions_logged:
 				self.__logger.exception("PermissionError intercepted when calling psutil.disk_partitions, this is expected on android devices, other similar errors won't be logged")
 				self.__permission_error_disk_partitions_logged = True
+			self.__logger.debug("psutil.disk_partitions raised a PermissionError", exc_info=True)
 			return []
 
 	def get_network(self, all):
