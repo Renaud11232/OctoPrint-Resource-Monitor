@@ -145,7 +145,7 @@ class Monitor:
 			if all or nic_name not in self.__network_exceptions:
 				nic = dict(
 					name=nic_name,
-					addrs=[addr._asdict() for addr in addrs[nic_name]]
+					addrs=[addr._asdict() for addr in addrs[nic_name]] if nic_name in addrs else []
 				)
 				nic.update(io_counters[nic_name]._asdict())
 				if self.__use_net_if_stats and nic_name in stats:
