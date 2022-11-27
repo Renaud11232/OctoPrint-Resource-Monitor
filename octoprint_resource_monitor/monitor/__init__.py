@@ -13,7 +13,7 @@ class Monitor:
 		self.__use_net_if_stats = use_net_if_stats
 		self.__logged_function_calls = dict()
 
-	def __log_exception_once(self, function, message):
+	def __log_exception(self, function, message):
 		if function not in self.__logged_function_calls:
 			self.__logged_function_calls[function] = []
 		errors = self.__logged_function_calls[function]
@@ -49,7 +49,7 @@ class Monitor:
 			cpu_freq = psutil.cpu_freq()
 			self.__logger.debug("cpu_freq() : %r" % (cpu_freq,))
 		except PermissionError:
-			self.__log_exception_once(psutil.cpu_freq, "psutil.cpu_freq() raised a PermissionError")
+			self.__log_exception(psutil.cpu_freq, "psutil.cpu_freq() raised a PermissionError")
 		cores = psutil.cpu_percent(percpu=True)
 		self.__logger.debug("cpu_percent(percpu=True) : %r" % (cores,))
 		average = sum(cores) / len(cores)
@@ -123,15 +123,15 @@ class Monitor:
 					partition.update(disk_usage._asdict())
 				except FileNotFoundError:
 					partitions_to_remove.append(partition)
-					self.__log_exception_once(psutil.disk_usage, "psutil.disk_usage raised a FileNotFoundError for disk %s" % partition["mountpoint"])
+					self.__log_exception(psutil.disk_usage, "psutil.disk_usage raised a FileNotFoundError for disk %s" % partition["mountpoint"])
 				except PermissionError:
 					partitions_to_remove.append(partition)
-					self.__log_exception_once(psutil.disk_usage, "psutil.disk_usage raised a PermissionError for disk %s" % partition["mountpoint"])
+					self.__log_exception(psutil.disk_usage, "psutil.disk_usage raised a PermissionError for disk %s" % partition["mountpoint"])
 			for partition_to_remove in partitions_to_remove:
 				partitions.remove(partition_to_remove)
 			return partitions
 		except PermissionError:
-			self.__log_exception_once(psutil.disk_partitions, "psutil.disk_partitions raised a PermissionError")
+			self.__log_exception(psutil.disk_partitions, "psutil.disk_partitions raised a PermissionError")
 			return []
 
 	def get_network(self, all):
@@ -139,7 +139,7 @@ class Monitor:
 			io_counters = psutil.net_io_counters(pernic=True)
 			self.__logger.debug("net_io_counters(pernic=True) : %r" % (io_counters,))
 		except PermissionError:
-			self.__log_exception_once(psutil.net_io_counters, "psutil.net_io_counters(pernic=True) raised a PermissionError")
+			self.__log_exception(psutil.net_io_counters, "psutil.net_io_counters(pernic=True) raised a PermissionError")
 			return []
 		addrs = psutil.net_if_addrs()
 		self.__logger.debug("net_if_addrs() : %r" % (addrs,))
@@ -166,8 +166,12 @@ class Monitor:
 		# 	secsleft=16628,
 		# 	power_plugged=True
 		# )
-		bat = psutil.sensors_battery()
-		self.__logger.debug("sensors_battery() : %r" % (bat,))
+		bat = None
+		try:
+			bat = psutil.sensors_battery()
+			self.__logger.debug("sensors_battery() : %r" % (bat,))
+		except PermissionError:
+			self.__log_exception(psutil.sensors_battery, "psutil.sensors_battery() raised a PermissionError")
 		if bat:
 			return bat._asdict()
 		return dict()
