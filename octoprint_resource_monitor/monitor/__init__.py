@@ -1,5 +1,6 @@
 import psutil
 import time
+import sys
 
 
 class Monitor:
@@ -10,9 +11,17 @@ class Monitor:
 		self.__network_exceptions = network_exceptions
 		self.__disk_exceptions = disk_exceptions
 		self.__use_net_if_stats = use_net_if_stats
-		self.__file_not_found_logged = False
-		self.__permission_error_disk_usage_logged = False
-		self.__permission_error_disk_partitions_logged = False
+		self.__logged_function_calls = dict()
+
+	def __log_exception_once(self, function, message):
+		if function not in self.__logged_function_calls:
+			self.__logged_function_calls[function] = []
+		errors = self.__logged_function_calls[function]
+		error_type, _, _ = sys.exc_info()
+		if error_type not in errors:
+			self.__logger.exception(message)
+			errors.append(error_type)
+		self.__logger.debug(message, exc_info=True)
 
 	def __get_cpu_temp(self, temp):
 		if temp is None:
@@ -35,12 +44,15 @@ class Monitor:
 		self.__process.cpu_percent()
 
 	def get_cpu(self):
-		cpu_freq = psutil.cpu_freq()
-		self.__logger.debug("cpu_freq() : %r" % (cpu_freq,))
+		cpu_freq = None
+		try:
+			cpu_freq = psutil.cpu_freq()
+			self.__logger.debug("cpu_freq() : %r" % (cpu_freq,))
+		except PermissionError:
+			self.__log_exception_once(psutil.cpu_freq, "psutil.cpu_freq() raised a PermissionError")
 		cores = psutil.cpu_percent(percpu=True)
 		self.__logger.debug("cpu_percent(percpu=True) : %r" % (cores,))
-		average = psutil.cpu_percent()
-		self.__logger.debug("cpu_percent() : %r" % (average,))
+		average = sum(cores) / len(cores)
 		core_count = psutil.cpu_count(logical=False)
 		self.__logger.debug("cpu_count(logical=False) : %r" % (core_count,))
 		thread_count = psutil.cpu_count(logical=True)
@@ -111,29 +123,24 @@ class Monitor:
 					partition.update(disk_usage._asdict())
 				except FileNotFoundError:
 					partitions_to_remove.append(partition)
-					if not self.__file_not_found_logged:
-						self.__logger.exception("FileNotFoundError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
-						self.__file_not_found_logged = True
-					self.__logger.debug("psutil.disk_usage raised a FileNotFoundError for disk %s" % partition["mountpoint"], exc_info=True)
+					self.__log_exception_once(psutil.disk_usage, "psutil.disk_usage raised a FileNotFoundError for disk %s" % partition["mountpoint"])
 				except PermissionError:
 					partitions_to_remove.append(partition)
-					if not self.__permission_error_disk_usage_logged:
-						self.__logger.exception("PermissionError intercepted when calling psutil.disk_usage, this is expected on android devices, other similar errors won't be logged")
-						self.__permission_error_disk_usage_logged = True
-					self.__logger.debug("psutil.disk_usage raised a PermissionError for disk %s" % partition["mountpoint"], exc_info=True)
+					self.__log_exception_once(psutil.disk_usage, "psutil.disk_usage raised a PermissionError for disk %s" % partition["mountpoint"])
 			for partition_to_remove in partitions_to_remove:
 				partitions.remove(partition_to_remove)
 			return partitions
 		except PermissionError:
-			if not self.__permission_error_disk_partitions_logged:
-				self.__logger.exception("PermissionError intercepted when calling psutil.disk_partitions, this is expected on android devices, other similar errors won't be logged")
-				self.__permission_error_disk_partitions_logged = True
-			self.__logger.debug("psutil.disk_partitions raised a PermissionError", exc_info=True)
+			self.__log_exception_once(psutil.disk_partitions, "psutil.disk_partitions raised a PermissionError")
 			return []
 
 	def get_network(self, all):
-		io_counters = psutil.net_io_counters(pernic=True)
-		self.__logger.debug("net_io_counters(pernic=True) : %r" % (io_counters,))
+		try:
+			io_counters = psutil.net_io_counters(pernic=True)
+			self.__logger.debug("net_io_counters(pernic=True) : %r" % (io_counters,))
+		except PermissionError:
+			self.__log_exception_once(psutil.net_io_counters, "psutil.net_io_counters(pernic=True) raised a PermissionError")
+			return []
 		addrs = psutil.net_if_addrs()
 		self.__logger.debug("net_if_addrs() : %r" % (addrs,))
 		stats = {}
