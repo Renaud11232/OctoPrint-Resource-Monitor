@@ -23,6 +23,8 @@ class Monitor:
 			cpu_temp = temp["cpu_thermal"][0]._asdict()
 		if "soc_thermal" in temp:
 			cpu_temp = temp["soc_thermal"][0]._asdict()
+		if "cpu_thermal_zone" in temp:
+			cpu_temp = temp["cpu_thermal_zone"][0]._asdict()
 		return cpu_temp
 
 	def __init_process(self):
