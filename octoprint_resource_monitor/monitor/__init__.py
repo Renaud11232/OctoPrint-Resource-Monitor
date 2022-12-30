@@ -15,16 +15,17 @@ class Monitor:
 		if temp is None:
 			return None
 		cpu_temp = None
-		if "coretemp" in temp:
-			cpu_temp = temp["coretemp"][0]._asdict()
-		if "cpu-thermal" in temp:
-			cpu_temp = temp["cpu-thermal"][0]._asdict()
-		if "cpu_thermal" in temp:
-			cpu_temp = temp["cpu_thermal"][0]._asdict()
-		if "soc_thermal" in temp:
-			cpu_temp = temp["soc_thermal"][0]._asdict()
-		if "cpu_thermal_zone" in temp:
-			cpu_temp = temp["cpu_thermal_zone"][0]._asdict()
+		temperature_possible_keys = [
+			"coretemp",
+			"cpu-thermal",
+			"cpu_thermal",
+			"soc_thermal",
+			"cpu_thermal_zone"
+		]
+		for key in temperature_possible_keys:
+			if key in temp:
+				cpu_temp = temp[key][0]._asdict()
+				break
 		return cpu_temp
 
 	def __init_process(self):
