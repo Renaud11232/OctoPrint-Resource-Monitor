@@ -20,7 +20,8 @@ class Monitor:
 			"cpu-thermal",
 			"cpu_thermal",
 			"soc_thermal",
-			"cpu_thermal_zone"
+			"cpu_thermal_zone",
+			"acpitz"
 		]
 		for key in temperature_possible_keys:
 			if key in temp:
