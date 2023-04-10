@@ -116,6 +116,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def api(self):
 		return flask.make_response(flask.jsonify(self.__monitor.get_all_resources()), 200)
 
+	def is_blueprint_csrf_protected(self):
+		return True
+
 	def get_update_information(self):
 		return dict(
 			resource_monitor=dict(
