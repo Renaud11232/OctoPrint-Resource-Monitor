@@ -1,7 +1,7 @@
 plugin_identifier = "resource_monitor"
 plugin_package = "octoprint_resource_monitor"
 plugin_name = "OctoPrint-Resource-Monitor"
-plugin_version = "0.3.14"
+plugin_version = "0.3.15rc1"
 plugin_description = """A plugin to view the current CPU and RAM usage on your system"""
 plugin_author = "Renaud Gaspard"
 plugin_author_email = "gaspardrenaud@hotmail.com"

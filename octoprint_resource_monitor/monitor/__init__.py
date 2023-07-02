@@ -15,17 +15,21 @@ class Monitor:
 		if temp is None:
 			return None
 		cpu_temp = None
-		temperature_possible_keys = [
-			"coretemp",
-			"cpu-thermal",
-			"cpu_thermal",
-			"soc_thermal",
-			"cpu_thermal_zone",
-			"acpitz"
-		]
-		for key in temperature_possible_keys:
+		temperature_possible_keys = {
+			"coretemp": 1,
+			"cpu-thermal": 1,
+			"cpu_thermal": 1,
+			"soc_thermal": 1,
+			"cpu_thermal_zone": 1,
+			"acpitz": 1,
+			"aml_thermal": 1000
+		}
+		for key, multiplier in temperature_possible_keys.items():
 			if key in temp:
 				cpu_temp = temp[key][0]._asdict()
+				if multiplier != 1:
+					for t_key in cpu_temp:
+						cpu_temp[t_key] *= multiplier
 				break
 		return cpu_temp
 
