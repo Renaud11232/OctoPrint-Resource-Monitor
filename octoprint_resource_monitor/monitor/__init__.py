@@ -22,6 +22,7 @@ class Monitor:
 			"soc_thermal": 1,
 			"cpu_thermal_zone": 1,
 			"acpitz": 1,
+			"scpi_sensors": 1,
 			"aml_thermal": 1000
 		}
 		for key, multiplier in temperature_possible_keys.items():
