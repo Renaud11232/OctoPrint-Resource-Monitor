@@ -57,7 +57,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 	def check_resources(self):
 		if not self._plugin_manager.registered_clients:  # No connected clients to UI
 			return False
-		if self._settings.getBoolean(["enable_profiling"]):
+		if self._settings.get_boolean(["enable_profiling"]):
 			pr = profile.Profile()
 			pr.enable()
 			message = self.__monitor.get_all_resources()
@@ -75,7 +75,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self.__monitor = Monitor(
 			self._settings.get(["network", "exceptions"]),
 			self._settings.get(["disk", "exceptions"]),
-			self._settings.getBoolean(["use_net_if_stats"]),
+			self._settings.get_boolean(["use_net_if_stats"]),
 			self._logger
 		)
 		RepeatedTimer(self.interval, self.check_resources).start()
