@@ -1,0 +1,44 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OctoPrint-Resource-Monitor"
+version = "0.3.17"
+description = "A plugin to view the current CPU and RAM usage on your system"
+authors = [
+    { name = "Renaud Gaspard", email = "gaspardrenaud@hotmail.com" },
+]
+requires-python = ">=3.7,<4"
+dependencies = [
+    "psutil",
+]
+dynamic = [
+    "license",
+]
+
+[project.entry-points."octoprint.plugin"]
+resource_monitor = "octoprint_resource_monitor"
+
+[project.urls]
+Homepage = "https://github.com/Renaud11232/OctoPrint-Resource-Monitor"
+
+[project.optional-dependencies]
+develop = [
+    "go-task-bin",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = [
+    "octoprint_resource_monitor",
+    "octoprint_resource_monitor.*",
+]
