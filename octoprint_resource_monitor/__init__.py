@@ -1,6 +1,3 @@
-# coding=utf-8
-from __future__ import absolute_import
-
 import logging
 import logging.handlers
 
@@ -151,7 +148,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 
 
 __plugin_name__ = "Resource Monitor"
-__plugin_pythoncompat__ = ">=2.7,<4"
+__plugin_pythoncompat__ = ">=3.7,<4"
 
 
 def __plugin_load__():

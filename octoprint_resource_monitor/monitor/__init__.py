@@ -37,25 +37,25 @@ class Monitor:
 
 	def __init_process(self):
 		self.__process = psutil.Process()
-		self.__logger.debug("self.__process is now %r" % (self.__process,))
+		self.__logger.debug(f"self.__process is now {repr(self.__process)}")
 		# First call, so it does not return 0 on next call
 		self.__process.cpu_percent()
 
 	def get_cpu(self):
 		cpu_freq = psutil.cpu_freq()
-		self.__logger.debug("cpu_freq() : %r" % (cpu_freq,))
+		self.__logger.debug(f"cpu_freq() : {repr(cpu_freq)}")
 		cores = psutil.cpu_percent(percpu=True)
-		self.__logger.debug("cpu_percent(percpu=True) : %r" % (cores,))
+		self.__logger.debug(f"cpu_percent(percpu=True) : {repr(cores)}")
 		average = psutil.cpu_percent()
-		self.__logger.debug("cpu_percent() : %r" % (average,))
+		self.__logger.debug(f"cpu_percent() : {repr(average)}")
 		core_count = psutil.cpu_count(logical=False)
-		self.__logger.debug("cpu_count(logical=False) : %r" % (core_count,))
+		self.__logger.debug(f"cpu_count(logical=False) : {repr(core_count)}")
 		thread_count = psutil.cpu_count(logical=True)
-		self.__logger.debug("cpu_count(logical=True) : %r" % (thread_count,))
+		self.__logger.debug(f"cpu_count(logical=True) : {repr(thread_count)}")
 		pids = len(psutil.pids())
-		self.__logger.debug("len(pids()) : %r" % (pids,))
+		self.__logger.debug(f"len(pids()) : {repr(pids)}")
 		boot_time = psutil.boot_time()
-		self.__logger.debug("boot_time() : %r" % (boot_time,))
+		self.__logger.debug(f"boot_time() : {repr(boot_time)}")
 		return dict(
 			cores=cores,
 			average=average,
@@ -71,7 +71,7 @@ class Monitor:
 		try:
 			total_cpu = self.__process.cpu_percent()
 		except psutil.NoSuchProcess:
-			self.__logger.debug("No process found when calling cpu_percent() on %r" % (self.__process,))
+			self.__logger.debug(f"No process found when calling cpu_percent() on {repr(self.__process)}")
 			self.__init_process()
 			total_cpu = self.__process.cpu_percent()
 		return min(total_cpu / core_count, average)
@@ -89,9 +89,9 @@ class Monitor:
 		temps_fahrenheit = None
 		if hasattr(psutil, "sensors_temperatures"):
 			temps_celsius = psutil.sensors_temperatures()
-			self.__logger.debug("sensors_temperatures() : %r" % (temps_celsius,))
+			self.__logger.debug(f"sensors_temperatures() : {repr(temps_celsius)}")
 			temps_fahrenheit = psutil.sensors_temperatures(fahrenheit=True)
-			self.__logger.debug("sensors_temperatures(fahrenheit=True) : %r" % (temps_fahrenheit,))
+			self.__logger.debug(f"sensors_temperatures(fahrenheit=True) : {repr(temps_fahrenheit)}")
 		temps_c = self.__get_cpu_temp(temps_celsius)
 		temps_f = self.__get_cpu_temp(temps_fahrenheit)
 		return dict(
@@ -101,29 +101,29 @@ class Monitor:
 
 	def get_memory(self):
 		virtual_memory = psutil.virtual_memory()
-		self.__logger.debug("virtual_memory() : %r" % (virtual_memory,))
+		self.__logger.debug(f"virtual_memory() : {repr(virtual_memory)}")
 		return virtual_memory._asdict()
 
 	def get_partitions(self, all):
 		disk_partitions = psutil.disk_partitions()
-		self.__logger.debug("disk_partitions() : %r" % (disk_partitions,))
+		self.__logger.debug(f"disk_partitions() : {repr(disk_partitions)}")
 		partitions = [partition._asdict() for partition in disk_partitions if partition.fstype and (all or partition.mountpoint not in self.__disk_exceptions)
 									and partition.fstype not in ["squashfs"]]
 		for partition in partitions:
 			disk_usage = psutil.disk_usage(partition["mountpoint"])
-			self.__logger.debug('disk_usage(partition["mountpoint"] : %r' % (disk_usage,))
+			self.__logger.debug(f'disk_usage(partition["mountpoint"] : {repr(disk_partitions)}')
 			partition.update(disk_usage._asdict())
 		return partitions
 
 	def get_network(self, all):
 		io_counters = psutil.net_io_counters(pernic=True)
-		self.__logger.debug("net_io_counters(pernic=True) : %r" % (io_counters,))
+		self.__logger.debug(f"net_io_counters(pernic=True) : {repr(io_counters)}")
 		addrs = psutil.net_if_addrs()
-		self.__logger.debug("net_if_addrs() : %r" % (addrs,))
+		self.__logger.debug(f"net_if_addrs() : {repr(addrs)}")
 		stats = {}
 		if self.__use_net_if_stats:
 			stats = psutil.net_if_stats()
-			self.__logger.debug("net_if_stats() : %r" % (stats,))
+			self.__logger.debug(f"net_if_stats() : {repr(stats)}")
 		final = []
 		for nic_name in io_counters:
 			if all or nic_name not in self.__network_exceptions:
@@ -144,7 +144,7 @@ class Monitor:
 		# 	power_plugged=True
 		# )
 		bat = psutil.sensors_battery()
-		self.__logger.debug("sensors_battery() : %r" % (bat,))
+		self.__logger.debug(f"sensors_battery() : {repr(bat)}")
 		if bat:
 			return bat._asdict()
 		return dict()
