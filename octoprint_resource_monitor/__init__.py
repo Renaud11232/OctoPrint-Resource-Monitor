@@ -29,6 +29,9 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			disk=dict(
 				exceptions=[]
 			),
+			diskio=dict(
+				exceptions=[]
+			),
 			temperature=dict(
 				unit="celsius"
 			),
@@ -72,6 +75,7 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 		self.__monitor = Monitor(
 			self._settings.get(["network", "exceptions"]),
 			self._settings.get(["disk", "exceptions"]),
+			self._settings.get(["diskio", "exceptions"]),
 			self._settings.get_boolean(["use_net_if_stats"]),
 			self._logger
 		)
@@ -104,6 +108,8 @@ class ResourceMonitorPlugin(octoprint.plugin.SettingsPlugin,
 			all_partitions=self.__monitor.get_partitions(all=True),
 			network=self.__monitor.get_network(all=False),
 			all_network=self.__monitor.get_network(all=True),
+			diskio=self.__monitor.get_disk_io(all=False),
+			all_diskio=self.__monitor.get_disk_io(all=True),
 			cpu=self.__monitor.get_cpu(),
 			temp=self.__monitor.get_cpu_temp(),
 			battery=self.__monitor.get_battery()

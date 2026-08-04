@@ -1,0 +1,30 @@
+{% for disk in plugin_resource_monitor_diskio %}
+    <div id="resource_monitor_diskio_{{ loop.index - 1 }}_tab" class="tab-pane">
+        <div class="row-fluid">
+            <div class="span12">
+                <h4>{{ _("Disk I/O") }} {{ disk.name }}</h4>
+            </div>
+        </div>
+        <div class="row-fluid resource-scale">
+            <span class="tiny-text" data-bind="text: filesize($root.maxIoSpeeds()[{{ loop.index - 1 }}] || 0)"></span>/s
+        </div>
+        <div class="row-fluid">
+            <div class="span12 detail-plot-container">
+                <div class="detail-plot"></div>
+            </div>
+        </div>
+        <div class="row-fluid resource-scale">
+            <span class="tiny-text">0 B/s</span>
+        </div>
+        <div class="row-fluid resource-details">
+            <div class="span6">
+                <span class="tiny-text">{{ _("Read") }}</span><br/>
+                <span data-bind="text: filesize($root.readSpeeds()[{{ loop.index - 1 }}] || 0)"></span>/s
+            </div>
+            <div class="span6">
+                <span class="tiny-text">{{ _("Write") }}</span><br/>
+                <span data-bind="text: filesize($root.writeSpeeds()[{{ loop.index - 1 }}] || 0)"></span>/s
+            </div>
+        </div>
+    </div>
+{% endfor %}

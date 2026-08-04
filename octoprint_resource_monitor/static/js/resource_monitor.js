@@ -51,6 +51,16 @@ $(function() {
         self.lastReceivedBytes = [];
         self.lastSentBytes = [];
 
+        self.diskio = ko.observableArray();
+        self.readSpeeds = ko.observableArray();
+        self.writeSpeeds = ko.observableArray();
+        self.maxIoSpeeds = ko.observableArray();
+        self.miniDiskIoPlots = [];
+        self.diskIoPlots = [];
+        self.diskIoData = [];
+        self.lastReadBytes = [];
+        self.lastWriteBytes = [];
+
         self.setPlotsData = function(plots, data, max, min) {
             plots.forEach(function(plot) {
                 if(plot) {
@@ -158,6 +168,41 @@ $(function() {
             self.maxSpeeds(maxSpeeds);
         });
 
+        self.diskio.subscribe(function(newValue) {
+            if(self.diskIoData.length === 0) {
+                newValue.forEach(function() {
+                    self.diskIoData.push(new PlotData(self.frameLength(), self.frameCount(), [0, 0]));
+                });
+            }
+            var readSpeeds = [];
+            var writeSpeeds = [];
+            var maxIoSpeeds = [];
+            self.diskIoData.forEach(function(diskio, diskIndex) {
+                var read = 0;
+                var write = 0;
+                if(self.lastReadBytes[diskIndex] !== undefined && self.lastWriteBytes[diskIndex] !== undefined) {
+                    read = newValue[diskIndex].read_bytes - self.lastReadBytes[diskIndex];
+                    write = newValue[diskIndex].write_bytes - self.lastWriteBytes[diskIndex];
+                }
+                readSpeeds.push(read);
+                writeSpeeds.push(write);
+                var maxIoSpeed = 0;
+                diskio.pushData([read, write]);
+                self.setPlotsData([self.miniDiskIoPlots[diskIndex]], diskio);
+                var diskIoPlot = self.diskIoPlots[diskIndex];
+                if(diskIoPlot) {
+                    diskIoPlot.setData(diskio, [gettext("Read"), gettext("Write")]);
+                    maxIoSpeed = diskIoPlot.plot.getAxes().yaxis.max;
+                }
+                maxIoSpeeds.push(maxIoSpeed);
+                self.lastReadBytes[diskIndex] = newValue[diskIndex].read_bytes;
+                self.lastWriteBytes[diskIndex] = newValue[diskIndex].write_bytes;
+            });
+            self.readSpeeds(readSpeeds);
+            self.writeSpeeds(writeSpeeds);
+            self.maxIoSpeeds(maxIoSpeeds);
+        });
+
         self.battery.subscribe(function(newValue) {
             if(!self.batteryData) {
                 self.batteryData = new PlotData(self.frameLength(), self.frameCount(), [0]);
@@ -213,6 +258,11 @@ $(function() {
                 if(self.partitionPlots[index] === undefined) {
                     self.partitionPlots[index] = new ResourcePlot(tabId + " .detail-plot", false, false);
                 }
+            } else if (tabId.includes("#resource_monitor_diskio_")) {
+                index = parseInt($(e.target).attr("data-index"));
+                if(self.diskIoPlots[index] === undefined) {
+                    self.diskIoPlots[index] = new ResourcePlot(tabId + " .detail-plot", false, true);
+                }
             } else if (tabId.includes("#resource_monitor_network_")) {
                 index = parseInt($(e.target).attr("data-index"));
                 if(self.networkPlots[index] === undefined) {
@@ -245,6 +295,11 @@ $(function() {
                         self.miniNetworkPlots.push(new ResourcePlot(this, true, true));
                     });
                 }
+                if(self.miniDiskIoPlots.length === 0) {
+                    $("div.resource-monitor-mini-diskio-plot").each(function() {
+                        self.miniDiskIoPlots.push(new ResourcePlot(this, true, true));
+                    });
+                }
                 if(self.cpuCorePlots.length === 0) {
                     $("#resource_monitor_cpu_tab .detail-plot").each(function() {
                         self.cpuCorePlots.push(new ResourcePlot(this, false, false, 100));
@@ -260,6 +315,7 @@ $(function() {
                 self.memory(message.memory);
                 self.partitions(message.partitions);
                 self.network(message.network);
+                self.diskio(message.diskio);
                 self.battery(message.battery);
             }
         };
@@ -306,6 +362,7 @@ $(function() {
             self.setupPlotDataIfNeeded([self.memoryData], [0]);
             self.setupPlotDataIfNeeded(self.diskData, [0]);
             self.setupPlotDataIfNeeded(self.networkData, [0, 0]);
+            self.setupPlotDataIfNeeded(self.diskIoData, [0, 0]);
             self.setupPlotDataIfNeeded([self.batteryData], [0]);
         };
     }
