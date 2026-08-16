@@ -1,0 +1,17 @@
+{% for disk in plugin_resource_monitor_diskio %}
+    <li>
+        <a data-toggle="tab" href="#resource_monitor_diskio_{{ loop.index - 1 }}_tab" data-index="{{ loop.index - 1 }}">
+            <div class="row-fluid">
+                <div class="span5">
+                    <div class="mini-plot resource-monitor-mini-diskio-plot"></div>
+                </div>
+                <div class="span7">
+                    {{ _("Disk I/O") }} {{ loop.index - 1 }}<br/>
+                    <span class="tiny-text">
+                        {{ disk.name }}
+                    </span>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endfor %}

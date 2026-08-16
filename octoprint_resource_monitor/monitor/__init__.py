@@ -1,14 +1,17 @@
+import os
+import platform
 import psutil
 import time
 
 
 class Monitor:
 
-	def __init__(self, network_exceptions, disk_exceptions, use_net_if_stats, logger):
+	def __init__(self, network_exceptions, disk_exceptions, diskio_exceptions, use_net_if_stats, logger):
 		self.__logger = logger
 		self.__init_process()
 		self.__network_exceptions = network_exceptions
 		self.__disk_exceptions = disk_exceptions
+		self.__diskio_exceptions = diskio_exceptions
 		self.__use_net_if_stats = use_net_if_stats
 
 	def __get_cpu_temp(self, temp):
@@ -137,6 +140,27 @@ class Monitor:
 				final.append(nic)
 		return final
 
+	def __get_physical_disks(self, io_counters):
+		# On Linux disk_io_counters() reports partitions and virtual devices as well.
+		# /sys/block/<name> exists for whole devices only, and the "device" entry inside
+		# it is created by the kernel only for hardware backed ones, which rules out
+		# loop, ram, zram and device mapper targets without parsing any device name.
+		# Platforms without /sys/block (Windows) already report physical drives only.
+		if platform.system() != "Linux":
+			return list(io_counters.keys())
+		return [name for name in io_counters.keys() if os.path.exists(os.path.join("/sys/block", name, "device"))]
+
+	def get_disk_io(self, all):
+		io_counters = psutil.disk_io_counters(perdisk=True)
+		self.__logger.debug(f"disk_io_counters(perdisk=True) : {repr(io_counters)}")
+		final = []
+		for disk_name in sorted(self.__get_physical_disks(io_counters)):
+			if all or disk_name not in self.__diskio_exceptions:
+				disk = dict(name=disk_name)
+				disk.update(io_counters[disk_name]._asdict())
+				final.append(disk)
+		return final
+
 	def get_battery(self):
 		# return dict(
 		# 	percent=94,
@@ -156,5 +180,6 @@ class Monitor:
 			memory=self.get_memory(),
 			partitions=self.get_partitions(all=False),
 			network=self.get_network(all=False),
+			diskio=self.get_disk_io(all=False),
 			battery=self.get_battery()
 		)

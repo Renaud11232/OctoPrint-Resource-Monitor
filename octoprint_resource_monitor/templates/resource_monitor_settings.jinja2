@@ -51,6 +51,16 @@
                 </select>
             </div>
         </div>
+        <div class="control-group">
+            <label class="control-label" for="resource_monitor_diskio_exceptions">{{ _('Disk I/O Exceptions') }}</label>
+            <div class="controls">
+                <select id="resource_monitor_diskio_exceptions" class="span6" multiple="multiple" data-bind="selectedOptions: settingsViewModel.settings.plugins.resource_monitor.diskio.exceptions">
+                    {% for disk in plugin_resource_monitor_all_diskio %}
+                        <option value="{{ disk.name }}">{{ disk.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
         <p>
             {{ _("Select what you want to <strong>hide</strong>.") }}<br/>
             {{ _("Use <code>CTRL+Click</code> to select/deselect multiple options.") }}

@@ -26,10 +26,16 @@
     overflow: hidden;
 }
 
-#tab_plugin_resource_monitor .tab-content .tab-pane h4 {
+#tab_plugin_resource_monitor .tab-content .tab-pane h4, #tab_plugin_resource_monitor .tab-content .tab-pane h5 {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+#tab_plugin_resource_monitor .tab-content .tab-pane h5 {
+    font-weight: normal;
+    text-align: right;
+    font-size: smaller;
 }
 
 #tab_plugin_resource_monitor .tab-content .tab-pane .row-fluid div {
