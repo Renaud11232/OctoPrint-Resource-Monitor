@@ -1,4 +1,5 @@
 import os
+import platform
 import psutil
 import time
 
@@ -145,10 +146,9 @@ class Monitor:
 		# it is created by the kernel only for hardware backed ones, which rules out
 		# loop, ram, zram and device mapper targets without parsing any device name.
 		# Platforms without /sys/block (Windows) already report physical drives only.
-		sysblock = "/sys/block"
-		if not os.path.isdir(sysblock):
+		if platform.system() != "Linux":
 			return list(io_counters.keys())
-		return [name for name in io_counters.keys() if os.path.exists(os.path.join(sysblock, name, "device"))]
+		return [name for name in io_counters.keys() if os.path.exists(os.path.join("/sys/block", name, "device"))]
 
 	def get_disk_io(self, all):
 		io_counters = psutil.disk_io_counters(perdisk=True)

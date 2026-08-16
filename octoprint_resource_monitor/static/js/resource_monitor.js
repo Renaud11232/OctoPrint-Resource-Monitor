@@ -24,6 +24,10 @@ $(function() {
         self.downloadSpeeds = ko.observableArray();
         self.uploadSpeeds = ko.observableArray();
         self.maxSpeeds = ko.observableArray();
+        self.diskio = ko.observableArray();
+        self.readSpeeds = ko.observableArray();
+        self.writeSpeeds = ko.observableArray();
+        self.maxIoSpeeds = ko.observableArray();
         self.battery = ko.observable();
 
         self.miniCpuPlot = null;
@@ -36,6 +40,8 @@ $(function() {
         self.partitionPlots = [];
         self.miniNetworkPlots = [];
         self.networkPlots = [];
+        self.miniDiskIoPlots = [];
+        self.diskIoPlots = [];
         self.miniBatteryPlot = null;
         self.batteryPlot = null;
 
@@ -46,18 +52,11 @@ $(function() {
         self.memoryData = null;
         self.diskData = [];
         self.networkData = [];
+        self.diskIoData = [];
         self.batteryData = null;
 
         self.lastReceivedBytes = [];
         self.lastSentBytes = [];
-
-        self.diskio = ko.observableArray();
-        self.readSpeeds = ko.observableArray();
-        self.writeSpeeds = ko.observableArray();
-        self.maxIoSpeeds = ko.observableArray();
-        self.miniDiskIoPlots = [];
-        self.diskIoPlots = [];
-        self.diskIoData = [];
         self.lastReadBytes = [];
         self.lastWriteBytes = [];
 
@@ -249,24 +248,24 @@ $(function() {
                 if(self.memoryPlot === null) {
                     self.memoryPlot = new ResourcePlot(tabId + " .detail-plot", false, false);
                 }
-            } else if (tabId === "#resource_monitor_battery_tab") {
-                if(self.batteryPlot === null) {
-                    self.batteryPlot = new ResourcePlot(tabId + " .detail-plot", false, false, 100);
-                }
             } else if (tabId.includes("#resource_monitor_disk_")) {
                 index = parseInt($(e.target).attr("data-index"));
                 if(self.partitionPlots[index] === undefined) {
                     self.partitionPlots[index] = new ResourcePlot(tabId + " .detail-plot", false, false);
+                }
+            } else if (tabId.includes("#resource_monitor_network_")) {
+                index = parseInt($(e.target).attr("data-index"));
+                if(self.networkPlots[index] === undefined) {
+                    self.networkPlots[index] = new ResourcePlot(tabId + " .detail-plot", false, true);
                 }
             } else if (tabId.includes("#resource_monitor_diskio_")) {
                 index = parseInt($(e.target).attr("data-index"));
                 if(self.diskIoPlots[index] === undefined) {
                     self.diskIoPlots[index] = new ResourcePlot(tabId + " .detail-plot", false, true);
                 }
-            } else if (tabId.includes("#resource_monitor_network_")) {
-                index = parseInt($(e.target).attr("data-index"));
-                if(self.networkPlots[index] === undefined) {
-                    self.networkPlots[index] = new ResourcePlot(tabId + " .detail-plot", false, true);
+            } else if (tabId === "#resource_monitor_battery_tab") {
+                if(self.batteryPlot === null) {
+                    self.batteryPlot = new ResourcePlot(tabId + " .detail-plot", false, false, 100);
                 }
             }
         });

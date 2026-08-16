@@ -6,7 +6,7 @@
                     <div class="mini-plot resource-monitor-mini-diskio-plot"></div>
                 </div>
                 <div class="span7">
-                    {{ _("Disk I/O") }}<br/>
+                    {{ _("Disk I/O") }} {{ loop.index - 1 }}<br/>
                     <span class="tiny-text">
                         {{ disk.name }}
                     </span>
