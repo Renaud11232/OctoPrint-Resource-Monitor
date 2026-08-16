@@ -1,9 +1,14 @@
 {% for nic in plugin_resource_monitor_network %}
     <div id="resource_monitor_network_{{ loop.index - 1 }}_tab" class="tab-pane">
         <div class="row-fluid">
-            <div class="span12">
+            <div class="span8">
                 <h4>{{ _("Network") }} {{ loop.index - 1 }}</h4>
             </div>
+            <!-- ko with: network()[{{ loop.index - 1 }}] -->
+                <div class="span4">
+                    <h5 data-bind="text: name, attr: {'title': name}"></h5>
+                </div>
+            <!-- /ko -->
         </div>
         <!-- ko with: network()[{{ loop.index - 1 }}]-->
             <div class="row-fluid resource-scale">
