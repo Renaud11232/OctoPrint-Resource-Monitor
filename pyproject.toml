@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OctoPrint-Resource-Monitor"
-version = "0.4.0"
+version = "0.5.0"
 description = "A plugin to view the current CPU and RAM usage on your system"
 authors = [
     { name = "Renaud Gaspard", email = "gaspardrenaud@hotmail.com" },
